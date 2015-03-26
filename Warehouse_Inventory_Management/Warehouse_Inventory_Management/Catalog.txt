@@ -1,0 +1,10 @@
+H2015-03-25
+0000000001Backpack0000000000000000000000A00023.00This backpack is blue and can store up to 30 Textbooks.
+0000000002PradaPurse                    A01200.00This leather interior and exterior purse is the best trend setting bag.
+0000000003PradaSkirt                    A00340.00Pink tweed skirt.
+0000000004Kitkat                        A00003.00Yum, chocolate. Only 10 calories!
+0000000005Skittles                      A00003.00Taste the rainbow!
+0000000006BalletShoes                   A00050.99Get your dance on.
+00000a0003Pens                          A00005.00This pack of 5 pens will fill all your writing needs.
+T7
+
