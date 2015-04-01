@@ -1,10 +1,10 @@
-
-
 /*
 Warehouse Inventory Management System
 
 Cody Carlson 3/11/15 5:30pm - Created the basic main menu structure.
 			 3/27/15 3:30pm - Edited the main menu based on use case changes.
+			 3/31/15 6:30pm - Added Anna's Basis to the main.
+			 4/1/15  3:30pm - Added parameters to main menu and worked on item inventory display and update. Made warehouse vector sizes 20/60/20 (See main, Starts at Warehouse1[0].resize(20);)
 */
 
 //Includes go here:
@@ -20,17 +20,6 @@ Cody Carlson 3/11/15 5:30pm - Created the basic main menu structure.
 using namespace std;
 
 
-//Prototypes of functions go here:
-void displayMainMenu();
-void logOut();
-void availableSpaceRemaining();
-void inventoryValue();
-void searchHistoryLog();
-void itemInformationDisplay();
-void itemInventoryDisplay();
-void showWarehouseContents();
-void editItemCatalog();
-void addUser();
 
 struct CatalogItem{
 	string ID;
@@ -121,7 +110,7 @@ vector<Shipments> loadShipments()
 		}
 
 
-		system("pause");
+		//system("pause");
 		StoredDailyShipments.push_back(A);
 		getline(cat,sLine);
 	}
@@ -207,7 +196,7 @@ vector<Orders> loadOrders(){
 		}
 
 
-		system("pause");
+		//system("pause");
 		StoredDailyOrders.push_back(A);
 		getline(cat,sLine);
 	}
@@ -246,7 +235,7 @@ vector<CatalogItem> loadCatalog(){
 		cout<<A.itemPrice<<endl;
 		A.itemDesc = sLine.substr(49,300);//.substr(45);
 		cout<<A.itemDesc<<endl;
-		system("pause");
+		//system("pause");
 		Catalog.push_back(A);
 		getline(cat,sLine);
 	}
@@ -403,7 +392,7 @@ void SetUpWarehouses(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehou
 
 	getline(cat,sLine);
 	cout<<sLine<<"after warehouse3";
-	system("pause");
+	//system("pause");
 	while(!cat.eof())
 	{
 		cout<<"hi";
@@ -538,6 +527,23 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 	return;
 }
 
+
+//Prototypes of functions go here:
+void displayMainMenu(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+void availableSpaceRemaining(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+void inventoryValue(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+void searchHistoryLog(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+void itemInformationDisplay(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+
+void itemInventoryDisplay(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+void itemInformationDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+
+void showWarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+void editItemCatalog(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+void addUser(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+
+
 //Main goes here:
 int main () {
 	vector<vector<Warehouse>> Warehouse1;
@@ -570,6 +576,31 @@ int main () {
 	cout<<Warehouse3.at(1).size();
 	cout<<Warehouse3.at(2).size();
 
+	Warehouse1[0].resize(20);
+	Warehouse1[1].resize(60);
+	Warehouse1[2].resize(20);
+
+	Warehouse2[0].resize(20);
+	Warehouse2[1].resize(60);
+	Warehouse2[2].resize(20);
+
+	Warehouse3[0].resize(20);
+	Warehouse3[1].resize(60);
+	Warehouse3[2].resize(20);
+	
+	cout<<endl<<endl;
+
+	cout<<Warehouse1.at(0).size();
+	cout<<Warehouse1.at(1).size();
+	cout<<Warehouse1.at(2).size();
+	cout<<endl;
+	cout<<Warehouse2.at(0).size();
+	cout<<Warehouse2.at(1).size();
+	cout<<Warehouse2.at(2).size();
+	cout<<endl;
+	cout<<Warehouse3.at(0).size();
+	cout<<Warehouse3.at(1).size();
+	cout<<Warehouse3.at(2).size();
 
 	cout<<"here"<<endl;
 
@@ -579,14 +610,14 @@ int main () {
 	//Shipment Processing
 
 
-	displayMainMenu();// call the main menu function
+	displayMainMenu(Warehouse1,Warehouse2,Warehouse3);// call the main menu function
 
 	return 0;
 }
 
 
 //Program functions go here:
-void displayMainMenu() {//main menu willdisplay to the user which options they have to choose from
+void displayMainMenu(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3) {//main menu willdisplay to the user which options they have to choose from
 	int menuResponse;
 
 	cout << "\nYou are in the Main Menu, select an option to continue:" << endl;//notify user they are in the main menu.
@@ -607,103 +638,255 @@ void displayMainMenu() {//main menu willdisplay to the user which options they h
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		cout << "Error: Invalid input, please try again."<<endl<<endl;
-		displayMainMenu();
+		displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
 	}
 
 	//if the input is actally one of the inputs then do that functionality
 		if (menuResponse == 0){
-			logOut();
+			logOut(Warehouse1,Warehouse2,Warehouse3);
 		}
 
 		else if (menuResponse == 1){
-			availableSpaceRemaining();
+			availableSpaceRemaining(Warehouse1,Warehouse2,Warehouse3);
 		}
 
 		else if (menuResponse == 2){
-			inventoryValue();
+			inventoryValue(Warehouse1,Warehouse2,Warehouse3);
 		}
 
 		else if (menuResponse == 3){
-			searchHistoryLog();
+			searchHistoryLog(Warehouse1,Warehouse2,Warehouse3);
 		}
 		else if (menuResponse == 4){
-			itemInformationDisplay();
+			itemInformationDisplay(Warehouse1,Warehouse2,Warehouse3);
 		}
 		else if (menuResponse == 5){
-			itemInventoryDisplay();
+			itemInventoryDisplay(Warehouse1,Warehouse2,Warehouse3);
 		}
 		else if (menuResponse == 6){
-			showWarehouseContents();
+			showWarehouseContents(Warehouse1,Warehouse2,Warehouse3);
 		}
 		else if (menuResponse == 7){
-			editItemCatalog();
+			editItemCatalog(Warehouse1,Warehouse2,Warehouse3);
 		}
 		else if (menuResponse == 8){
-			addUser();
+			cout << "\nTo add a new user, contact Gold Stars."<<endl;
 		}
 		else//Any other number input will be invalid.
 			cout<<"Error: Invalid input, please try again."<<endl<<endl;
-			displayMainMenu();
+			displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
 
 }
 
-void logOut(){//(BASE FUNCTIONALITY)if the user decides to log out, it will save the current warehouse inventory and catalog to the file then close the program
+void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY)if the user decides to log out, it will save the current warehouse inventory and catalog to the file then close the program
 	cout << "TEST: Save everything to the files functions go here, then close the program."<<endl<<endl;
 	exit(0);//exit point of the program
 }
 
-void availableSpaceRemaining(){//(EXTRA FUNCTIONALITY:CODY) displays the remaining location in the designated warehouse
+void availableSpaceRemaining(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(EXTRA FUNCTIONALITY:CODY) displays the remaining location in the designated warehouse
 
 
 	cout << "TEST: Available Space Remaining functions go here."<<endl<<endl;
-	displayMainMenu();
+	displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
 }
 
-void inventoryValue(){//(EXTRA FUNCTIONALITY:FERIQUE) displays the total value of all the items in the warehouses. 
+void inventoryValue(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(EXTRA FUNCTIONALITY:FERIQUE) displays the total value of all the items in the warehouses. 
 
 
 	cout << "TEST: Inventory Value functions go here."<<endl<<endl;
-	displayMainMenu();
+	displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
 }
 
-void searchHistoryLog(){//(EXTRA FUNCTIONALITY:ZACH) Search the History log for all transactions of the item ID
+void searchHistoryLog(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(EXTRA FUNCTIONALITY:ZACH) Search the History log for all transactions of the item ID
 
 
 	cout << "TEST: Search History Log functions go here."<<endl<<endl;
-	displayMainMenu();
+	displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
 }
 
-void itemInformationDisplay(){//(BASE FUNCTIONALITY) The inventory analyst is able to update the item name, id, price, stock, and size type.
+void itemInformationDisplay(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) The inventory analyst is able to update the item name, id, price, stock, and size type.
 
 
 	cout << "TEST: Item Information display and update functions go here."<<endl<<endl;
-	displayMainMenu();
+	displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
 }
 
-void itemInventoryDisplay(){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
+void itemInventoryDisplay(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
+	/*
+	QUESTIONS: Should we be able to manually add an item to the warehouse?
+	*/
+	string quantityResponse;
+	string warehouseResponse;
+	string sizeResponse;
+	int sizeConverter; //Takes the S,M,L that the user enters and converts it to the row of the matrix
+	int locationResponse;
+
+	itemInformationDisplay_WarehouseContents(Warehouse1, Warehouse2, Warehouse3);
+
+	do{
+	cout<< "Would you like to edit a quantity (y/n)? ";
+	cin>> quantityResponse;
+
+	if(quantityResponse == "y"){
+		do{
+		cout<< "What warehouse number is the item located in (1,2,3)?";
+		cin>> warehouseResponse;
+		}while(warehouseResponse != "1" && warehouseResponse != "2" &&warehouseResponse != "3");
+
+		cout<<endl;
+		do{
+		cout<< "What size type is the item (S,M,L)?";
+		cin>> sizeResponse;
 
 
-	cout << "TEST: Item Inventory display and update functions go here."<<endl<<endl;
-	displayMainMenu();
+
+		}while(sizeResponse!="S" && sizeResponse!="M" && sizeResponse!="L");
+	
+		if(sizeResponse == "S")
+			sizeConverter = 0;
+		else if(sizeResponse == "M")
+			sizeConverter = 1;
+		else if(sizeResponse == "L")
+			sizeConverter = 2;
+		else
+			cout<<"issue converting size to warehouse"<<endl;
+
+
+		cout<<endl;
+		
+		cout<< "What location is the item in?";
+		cin>> locationResponse;
+		
+		
+		if(warehouseResponse =="1"){
+			cout<< locationResponse; 
+			cout<<" || Item ID: " + Warehouse1[sizeConverter][locationResponse].ItemID + " || Item Quantity: " + Warehouse1[sizeConverter][locationResponse].quantity<<endl;
+		}
+		if(warehouseResponse =="2"){
+			cout<< locationResponse; 
+			cout<<" || Item ID: " + Warehouse2[sizeConverter][locationResponse].ItemID + " || Item Quantity: " + Warehouse2[sizeConverter][locationResponse].quantity<<endl;
+		}
+		if(warehouseResponse =="3"){
+			cout<< locationResponse; 
+			cout<<" || Item ID: " + Warehouse3[sizeConverter][locationResponse].ItemID + " || Item Quantity: " + Warehouse3[sizeConverter][locationResponse].quantity<<endl;
+		}
+
+		
+
+	}
+
+	else if(quantityResponse == "n"){
+		cout<< "you chose NO. ";
+	displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
+	}
+	}while(quantityResponse != "y" && quantityResponse != "n");
+	
+	//cout << "TEST: Item Inventory display and update functions go here."<<endl<<endl;
+	
 }
 
-void showWarehouseContents(){//(BASE FUNCTIONALITY) Given a Warehouse and a location show the contents
+void itemInformationDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
+	
+	cout<<"\nWarehouse 1 Small:"<<endl;
+	for(int i = 0; i<Warehouse1.at(0).size();i++){	
+		if (Warehouse1[0][i].ItemID != ""){
+			cout<< i;
+			cout<<" || Item ID: " + Warehouse1[0][i].ItemID;
+			cout<<" || Item Quantity: " + Warehouse1[0][i].quantity <<endl;}
+	}
+
+	cout<<"\nWarehouse 1 Medium:"<<endl;
+	for(int i = 0; i<Warehouse1.at(1).size();i++){	
+		if (Warehouse1[1][i].ItemID != ""){
+			cout<< i;
+			cout<<" || Item ID: " + Warehouse1[1][i].ItemID;
+			cout<<" || Item Quantity: " + Warehouse1[1][i].quantity <<endl;
+		}
+	}
+
+	cout<<"\nWarehouse 1 Large:"<<endl;
+	for(int i = 0; i<Warehouse1.at(2).size();i++){	
+		if (Warehouse1[2][i].ItemID != ""){
+			cout<< i;
+			cout<<" || Item ID: " + Warehouse1[2][i].ItemID;
+			cout<<" || Item Quantity: " + Warehouse1[2][i].quantity <<endl;
+		}
+	}
+
+	cout<<"\nWarehouse 2 Small:"<<endl;
+	for(int i = 0; i<Warehouse2.at(0).size();i++){	
+		if(Warehouse2[0][i].ItemID!=""){
+			cout<<  i;
+			cout<<" || Item ID: " + Warehouse2[0][i].ItemID;
+			cout<<" || Item Quantity: " + Warehouse2[0][i].quantity <<endl;
+		}
+	}
+
+	cout<<"\nWarehouse 2 Medium:"<<endl;
+	for(int i = 0; i<Warehouse2.at(1).size();i++){	
+		if(Warehouse2[1][i].ItemID!=""){
+			cout<<  i;
+			cout<<" || Item ID: " + Warehouse2[1][i].ItemID;
+			cout<<" || Item Quantity: " + Warehouse2[1][i].quantity <<endl;
+		}
+	}
+
+	cout<<"\nWarehouse 2 Large:"<<endl;
+	for(int i = 0; i<Warehouse2.at(2).size();i++){	
+		if(Warehouse2[2][i].ItemID!=""){
+			cout<<  i;
+			cout<<" || Item ID: " + Warehouse2[2][i].ItemID;
+			cout<<" || Item Quantity: " + Warehouse2[2][i].quantity <<endl;
+		}
+	}
+
+	cout<<"\nWarehouse 3 Small:"<<endl;
+	for(int i = 0; i<Warehouse3.at(0).size();i++){	
+		if(Warehouse3[0][i].ItemID!=""){
+			cout<<  i;
+			cout<<" || Item ID: " + Warehouse3[0][i].ItemID;
+			cout<<" || Item Quantity: " + Warehouse3[0][i].quantity <<endl;
+		}
+	}
+
+	cout<<"\nWarehouse 3 Medium:"<<endl;
+	for(int i = 0; i<Warehouse3.at(1).size();i++){	
+		if(Warehouse3[1][i].ItemID!=""){
+			cout<<  i;
+			cout<<" || Item ID: " + Warehouse3[1][i].ItemID;
+			cout<<" || Item Quantity: " + Warehouse3[1][i].quantity <<endl;
+		}
+	}
+
+	cout<<"\nWarehouse 3 Large:"<<endl;
+	for(int i = 0; i<Warehouse3.at(2).size();i++){	
+		if(Warehouse3[2][i].ItemID!=""){
+			cout<<  i;
+			cout<<" || Item ID: " + Warehouse3[2][i].ItemID;
+			cout<<" || Item Quantity: " + Warehouse3[2][i].quantity <<endl;
+		}
+	}
+
+}
+
+
+void showWarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) Given a Warehouse and a location show the contents
 
 
 	cout << "TEST: Show Warehouse Contents functions go here."<<endl<<endl;
-	displayMainMenu();
+	displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
 }
 
-void editItemCatalog(){//(EXTRA FUNCTIONALITY: GROUP) Able to Add or Delete an item from the catalog. From SPMP, "Edits the valid item catalog, ensuring that the number of accepted items never exceeds 400."
+void editItemCatalog(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(EXTRA FUNCTIONALITY: GROUP) Able to Add or Delete an item from the catalog. From SPMP, "Edits the valid item catalog, ensuring that the number of accepted items never exceeds 400."
 
 
 	cout << "TEST: Adding/Deleting Catalog items functions go here."<<endl<<endl;
-	displayMainMenu();
+	displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
 }
 
-void addUser(){// (EXTRA FUNCTIONALITY: ANNA) To add a new user they must contact the Gold Stars.
+/*void addUser(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){// (EXTRA FUNCTIONALITY: ANNA) To add a new user they must contact the Gold Stars.
 
 
 	cout << "\nTo add a new user, contact Gold Stars."<<endl;
-	displayMainMenu();
-}
+	displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
+}*/
