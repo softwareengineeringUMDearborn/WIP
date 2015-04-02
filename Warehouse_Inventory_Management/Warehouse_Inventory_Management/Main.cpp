@@ -723,7 +723,7 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 	string sizeResponse;//the users response for what size type to look at
 	int sizeConverter; //Takes the S,M,L that the user enters and converts it to the row of the matrix
 	int locationResponse;//the users response for where in the vector to look.
-	string quantityResponse;//the users response for what to change the quantity to?
+	int quantityResponse;//the users response for what to change the quantity to?
 
 	string addItemResponse;//the user response to adding a new item in that location spot.
 	string newID;//the variable that the user will enter to add to the warehouse.
@@ -827,40 +827,40 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 		
 		//the mainflow path
 		if(warehouseResponse =="1"){
-			if(quantityResponse == "0"){//if the input is 0 delete the item from the warehouse.
+			if(quantityResponse == 0){//if the input is 0 delete the item from the warehouse.
 				Warehouse1[sizeConverter][locationResponse].ItemID = "";
 				Warehouse1[sizeConverter][locationResponse].quantity = "";
 			}
-			else if (sizeResponse == "S" && quantityResponse >"250" || sizeResponse == "M" && quantityResponse >"100" || sizeResponse == "L" && quantityResponse >"10"){//if the quantity is more then boundaries then notify them
+			else if (sizeResponse == "S" && quantityResponse >250 || sizeResponse == "M" && quantityResponse >100 || sizeResponse == "L" && quantityResponse >10){//if the quantity is more then boundaries then notify them
 				cout<<"Quantity too large, please try again."<<endl;
 			}
 			else//main flow path
-				Warehouse1[sizeConverter][locationResponse].quantity = quantityResponse;
+				Warehouse1[sizeConverter][locationResponse].quantity = to_string(quantityResponse);
 		}
 		else if(warehouseResponse =="2"){
-			if(quantityResponse == "0"){
+			if(quantityResponse == 0){
 				Warehouse2[sizeConverter][locationResponse].ItemID = "";
 				Warehouse2[sizeConverter][locationResponse].quantity = "";
 			}
-			else if (sizeResponse == "S" && quantityResponse >"250" || sizeResponse == "M" && quantityResponse >"100" || sizeResponse == "L" && quantityResponse >"10"){
+			else if (sizeResponse == "S" && quantityResponse >250|| sizeResponse == "M" && quantityResponse >100 || sizeResponse == "L" && quantityResponse >10){
 				cout<<"Quantity too large, please try again."<<endl;
 			}
 			else
-				Warehouse2[sizeConverter][locationResponse].quantity = quantityResponse;
+				Warehouse2[sizeConverter][locationResponse].quantity = to_string(quantityResponse);
 		}
 		else if(warehouseResponse =="3"){
-			if(quantityResponse == "0"){
+			if(quantityResponse ==0){
 				Warehouse3[sizeConverter][locationResponse].ItemID = "";
 				Warehouse3[sizeConverter][locationResponse].quantity = "";
 			}
-			else if (sizeResponse == "S" && quantityResponse >"250" || sizeResponse == "M" && quantityResponse >"100" || sizeResponse == "L" && quantityResponse >"10"){
+			else if (sizeResponse == "S" && quantityResponse >250 || sizeResponse == "M" && quantityResponse >100 || sizeResponse == "L" && quantityResponse >10){
 				cout<<"Quantity too large, please try again."<<endl;
 			}
 			else
-				Warehouse3[sizeConverter][locationResponse].quantity = quantityResponse;
+				Warehouse3[sizeConverter][locationResponse].quantity = to_string(quantityResponse);
 		}
 
-		}while(sizeResponse == "S" && quantityResponse >"250" || sizeResponse == "M" && quantityResponse >"100" || sizeResponse == "L" && quantityResponse >"10");
+		}while(sizeResponse == "S" && quantityResponse >250 || sizeResponse == "M" && quantityResponse >100 || sizeResponse == "L" && quantityResponse >10);
 
 	}
 
