@@ -1,4 +1,5 @@
 
+
 /*
 Warehouse Inventory Management System
 
@@ -7,6 +8,7 @@ Cody Carlson 3/11/15 5:30pm - Created the basic main menu structure.
 			 3/31/15 6:30pm - Added Anna's Basis to the main.
 			 4/1/15  3:30pm - Added parameters to main menu and worked on item inventory display and update. Made warehouse vector sizes 20/60/20 (See main, Starts at Warehouse1[0].resize(20);)
 			 4/1/15  7:00pm - Fixed menu parameters.
+			 4/2/15  1:00am - Item inventory display and update Main flow is completed. Alternate flows are still work in progress. Mostly manually adding an item into the warehouse.
 */
 
 //Includes go here:
@@ -538,7 +540,7 @@ void inventoryValue();
 void searchHistoryLog();
 void itemInformationDisplay();
 
-void itemInventoryDisplay(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
 void itemInformationDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
 
 void showWarehouseContents();
@@ -577,6 +579,7 @@ int main () {
 	cout<<Warehouse3.at(0).size();
 	cout<<Warehouse3.at(1).size();
 	cout<<Warehouse3.at(2).size();
+
 
 	Warehouse1[0].resize(20);
 	Warehouse1[1].resize(60);
@@ -663,7 +666,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 			itemInformationDisplay();
 		}
 		else if (menuResponse == 5){
-			itemInventoryDisplay(Warehouse1,Warehouse2,Warehouse3);
+			itemInventoryDisplay(Catalog, Warehouse1,Warehouse2,Warehouse3);
 		}
 		else if (menuResponse == 6){
 			showWarehouseContents();
@@ -713,38 +716,39 @@ void itemInformationDisplay(){//(BASE FUNCTIONALITY) The inventory analyst is ab
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
 
-void itemInventoryDisplay(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
-	/*
-	QUESTIONS: Should we be able to manually add an item to the warehouse?
-	*/
-	string quantityResponse;
-	string warehouseResponse;
-	string sizeResponse;
+void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
+	
+	string Answer;// the users answer for if they want to edit a quantity.
+	string warehouseResponse;//the users response for what warehouse number
+	string sizeResponse;//the users response for what size type to look at
 	int sizeConverter; //Takes the S,M,L that the user enters and converts it to the row of the matrix
-	int locationResponse;
+	int locationResponse;//the users response for where in the vector to look.
+	string quantityResponse;//the users response for what to change the quantity to?
 
-	itemInformationDisplay_WarehouseContents(Warehouse1, Warehouse2, Warehouse3);
+	string addItemResponse;//the user response to adding a new item in that location spot.
+	string newID;//the variable that the user will enter to add to the warehouse.
+	int newQuantity; //the variable that the user will enter to add to the warehouse
+	bool validID; // a check to see if the new item is in the catalog
+
+	itemInformationDisplay_WarehouseContents(Warehouse1, Warehouse2, Warehouse3);//Display the warehouse to the user.
 
 	do{
 	cout<< "Would you like to edit a quantity (y/n)? ";
-	cin>> quantityResponse;
+	cin>> Answer;
 
-	if(quantityResponse == "y"){
+	if(Answer == "y"){//if the answer is y then continue on to the next question
 		do{
 		cout<< "What warehouse number is the item located in (1,2,3)?";
 		cin>> warehouseResponse;
-		}while(warehouseResponse != "1" && warehouseResponse != "2" &&warehouseResponse != "3");
+		}while(warehouseResponse != "1" && warehouseResponse != "2" &&warehouseResponse != "3");//keep asking unless the answer is 1,2 or 3
 
-		cout<<endl;
+	
 		do{
 		cout<< "What size type is the item (S,M,L)?";
 		cin>> sizeResponse;
-
-
-
-		}while(sizeResponse!="S" && sizeResponse!="M" && sizeResponse!="L");
+		}while(sizeResponse!="S" && sizeResponse!="M" && sizeResponse!="L");//keep asking unless the answer is S,M or L
 	
-		if(sizeResponse == "S")
+		if(sizeResponse == "S")//convert the response to vector row
 			sizeConverter = 0;
 		else if(sizeResponse == "M")
 			sizeConverter = 1;
@@ -754,36 +758,118 @@ void itemInventoryDisplay(vector<vector<Warehouse>>& Warehouse1,vector<vector<Wa
 			cout<<"issue converting size to warehouse"<<endl;
 
 
-		cout<<endl;
-		
+		//Determine the location of the item
+		do{
 		cout<< "What location is the item in?";
 		cin>> locationResponse;
-		
-		
-		if(warehouseResponse =="1"){
-			cout<< locationResponse; 
-			cout<<" || Item ID: " + Warehouse1[sizeConverter][locationResponse].ItemID + " || Item Quantity: " + Warehouse1[sizeConverter][locationResponse].quantity<<endl;
+		//Test boundaries
+		if(sizeResponse == "S" && locationResponse >=20 || sizeResponse == "L" && locationResponse >=20 || sizeResponse == "M" && locationResponse >=60){//if the item is out of the vector boundaries then notify.
+			cout<<"invalid boundary"<<endl;
 		}
-		if(warehouseResponse =="2"){
+		}while(sizeResponse == "S" && locationResponse >=20 || sizeResponse == "L" && locationResponse >=20 || sizeResponse == "M" && locationResponse >=60);//keep asking untill it is within boundaries
+		
+
+		
+		if(warehouseResponse =="1"){//take the responses and output the item that is in that position
+			if(Warehouse1[sizeConverter][locationResponse].ItemID!="" && Warehouse1[sizeConverter][locationResponse].quantity != ""){//if there is an item in that location
+				cout<< locationResponse; 
+				cout<<" || Item ID: " + Warehouse1[sizeConverter][locationResponse].ItemID + " || Item Quantity: " + Warehouse1[sizeConverter][locationResponse].quantity<<endl;//display that item again
+
+			}
+			/*else if(Warehouse1[sizeConverter][locationResponse].ItemID=="" && Warehouse1[sizeConverter][locationResponse].quantity == ""){//if there is no item in that location then ask to add a new one.
+				do{
+				cout<<"There is no current item in this location, would you like to add one (y/n)? ";
+				cin>>addItemResponse;
+
+				if (addItemResponse == "n"){
+					cout<<"Returning to the main menu"<<endl;
+				}
+				else if(addItemResponse == "y"){
+					do{
+					cout<<"Enter an Item ID: ";
+					cin>> newID;
+					validID =SearchCatalog(Catalog,newID, sizeResponse);
+					if(validID ==false){
+						cout<<"Item is not in the catalog, try again.";
+					}
+					else if(validID ==true){
+						do{
+						cout<<"Enter a Item Quantity: ";
+						cin>> newQuantity;
+						if (sizeResponse == "S" && quantityResponse >"250" || sizeResponse == "M" && quantityResponse >"100" || sizeResponse == "L" && quantityResponse >"10"){
+							cout<<"Quantity too large, please try again."<<endl;}
+						}while(sizeResponse == "S" && newQuantity >250 || sizeResponse == "M" && newQuantity >100 || sizeResponse == "L" && newQuantity >10);
+
+						Warehouse1[sizeConverter][locationResponse].ItemID = newID;
+						Warehouse1[sizeConverter][locationResponse].quantity = newQuantity;
+
+					}
+
+					}while(validID ==false);
+				}
+
+				}while(addItemResponse != "y" && addItemResponse != "n");
+			}*/
+		}
+		else if(warehouseResponse =="2"){
 			cout<< locationResponse; 
 			cout<<" || Item ID: " + Warehouse2[sizeConverter][locationResponse].ItemID + " || Item Quantity: " + Warehouse2[sizeConverter][locationResponse].quantity<<endl;
 		}
-		if(warehouseResponse =="3"){
+		else if(warehouseResponse =="3"){
 			cout<< locationResponse; 
 			cout<<" || Item ID: " + Warehouse3[sizeConverter][locationResponse].ItemID + " || Item Quantity: " + Warehouse3[sizeConverter][locationResponse].quantity<<endl;
 		}
 
+		do{
+		cout<< "What quantity would you like to change it to?"<<endl;
+		cin>>quantityResponse;
+
 		
+		//the mainflow path
+		if(warehouseResponse =="1"){
+			if(quantityResponse == "0"){//if the input is 0 delete the item from the warehouse.
+				Warehouse1[sizeConverter][locationResponse].ItemID = "";
+				Warehouse1[sizeConverter][locationResponse].quantity = "";
+			}
+			else if (sizeResponse == "S" && quantityResponse >"250" || sizeResponse == "M" && quantityResponse >"100" || sizeResponse == "L" && quantityResponse >"10"){//if the quantity is more then boundaries then notify them
+				cout<<"Quantity too large, please try again."<<endl;
+			}
+			else//main flow path
+				Warehouse1[sizeConverter][locationResponse].quantity = quantityResponse;
+		}
+		else if(warehouseResponse =="2"){
+			if(quantityResponse == "0"){
+				Warehouse2[sizeConverter][locationResponse].ItemID = "";
+				Warehouse2[sizeConverter][locationResponse].quantity = "";
+			}
+			else if (sizeResponse == "S" && quantityResponse >"250" || sizeResponse == "M" && quantityResponse >"100" || sizeResponse == "L" && quantityResponse >"10"){
+				cout<<"Quantity too large, please try again."<<endl;
+			}
+			else
+				Warehouse2[sizeConverter][locationResponse].quantity = quantityResponse;
+		}
+		else if(warehouseResponse =="3"){
+			if(quantityResponse == "0"){
+				Warehouse3[sizeConverter][locationResponse].ItemID = "";
+				Warehouse3[sizeConverter][locationResponse].quantity = "";
+			}
+			else if (sizeResponse == "S" && quantityResponse >"250" || sizeResponse == "M" && quantityResponse >"100" || sizeResponse == "L" && quantityResponse >"10"){
+				cout<<"Quantity too large, please try again."<<endl;
+			}
+			else
+				Warehouse3[sizeConverter][locationResponse].quantity = quantityResponse;
+		}
+
+		}while(sizeResponse == "S" && quantityResponse >"250" || sizeResponse == "M" && quantityResponse >"100" || sizeResponse == "L" && quantityResponse >"10");
 
 	}
 
-	else if(quantityResponse == "n"){
-		cout<< "you chose NO. ";
-	//displayMainMenu(Warehouse1,Warehouse2,Warehouse3);
-	}
-	}while(quantityResponse != "y" && quantityResponse != "n");
+	//if the ansewr is no then return to the main menu
+	else if(Answer == "n"){
+		cout<<"Returning to the main menu"<<endl;
 	
-	//cout << "TEST: Item Inventory display and update functions go here."<<endl<<endl;
+	}
+	}while(Answer != "y" && Answer != "n");
 	
 }
 
