@@ -1,29 +1,29 @@
-﻿Build started 4/2/2015 1:39:45 AM.
+﻿Build started 4/3/2015 8:31:03 PM.
      1>Project "C:\Users\Cody\Documents\College\Winter15\CIS375\Repository\WIP\Warehouse_Inventory_Management\Warehouse_Inventory_Management\Warehouse_Inventory_Management.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp
          Main.cpp
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(247): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(447): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(462): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(465): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(480): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(498): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(505): warning C4552: '-' : operator has no effect; expected operator with side-effect
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(511): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(518): warning C4552: '-' : operator has no effect; expected operator with side-effect
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(731): warning C4101: 'validID' : unreferenced local variable
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(730): warning C4101: 'newQuantity' : unreferenced local variable
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(879): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(887): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(896): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(905): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(914): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(923): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(932): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(941): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(950): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(684): warning C4717: 'displayMainMenu' : recursive on all control paths, function will cause runtime stack overflow
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(252): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(452): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(467): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(470): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(485): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(503): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(510): warning C4552: '-' : operator has no effect; expected operator with side-effect
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(516): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(523): warning C4552: '-' : operator has no effect; expected operator with side-effect
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(736): warning C4101: 'newQuantity' : unreferenced local variable
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(958): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(966): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(975): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(984): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(993): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(1002): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(1011): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(1020): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(1029): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(1040): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\cody\documents\college\winter15\cis375\repository\wip\warehouse_inventory_management\warehouse_inventory_management\main.cpp(690): warning C4717: 'displayMainMenu' : recursive on all control paths, function will cause runtime stack overflow
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Cody\Documents\College\Winter15\CIS375\Repository\WIP\Warehouse_Inventory_Management\Debug\Warehouse_Inventory_Management.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Cody\Documents\College\Winter15\CIS375\Repository\WIP\Warehouse_Inventory_Management\Debug\Warehouse_Inventory_Management.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Cody\Documents\College\Winter15\CIS375\Repository\WIP\Warehouse_Inventory_Management\Debug\Warehouse_Inventory_Management.lib" /MACHINE:X86 Debug\Main.obj
          Warehouse_Inventory_Management.vcxproj -> C:\Users\Cody\Documents\College\Winter15\CIS375\Repository\WIP\Warehouse_Inventory_Management\Debug\Warehouse_Inventory_Management.exe
@@ -31,4 +31,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.44
+Time Elapsed 00:00:01.75
