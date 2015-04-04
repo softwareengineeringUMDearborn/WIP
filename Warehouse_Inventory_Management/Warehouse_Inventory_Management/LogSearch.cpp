@@ -151,12 +151,11 @@ void logSearch(string itemNumber)
 					if(year >= foundItems.at(i).getYear())
 					{
 						one = true;
-						i--;
 						if(year == foundItems.at(i).getYear() )
 							equal = true;
 					}
-
-					i++;
+					else
+						i++;
 				}
 
 				if( equal == false ) // year > foundItems.at(i-1).getYear())	// item year newer than line year, insert
@@ -180,12 +179,11 @@ void logSearch(string itemNumber)
 						if( month >= foundItems.at(i).getMonth() )
 						{
 							one = true;
-							i--;
 							if( month == foundItems.at(i).getMonth() )
 								equal = true;
 						}
-
-						i++;
+						else
+							i++;
 					}
 
 					if( equal == false ) //month > foundItems.at(i-1).getMonth() )	// item month newer than line month, insert
@@ -209,10 +207,9 @@ void logSearch(string itemNumber)
 							if( day >= foundItems.at(i).getDay() )
 							{
 								one = true;
-								i--;
 							}
-
-							i++;
+							else
+								i++;
 						}
 						// item day is the same or newer than line day, insert
 						if(i == foundItems.size() )
