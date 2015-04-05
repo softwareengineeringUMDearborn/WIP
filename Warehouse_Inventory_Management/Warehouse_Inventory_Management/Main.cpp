@@ -12,6 +12,7 @@ Cody Carlson 3/11/15 5:30pm - Created the basic main menu structure.
 			 4/2/15  1:00am - Item inventory display and update Main flow is completed. Alternate flows are still work in progress. Mostly manually adding an item into the warehouse.
 			 4/3/15  8:15pm - Finished Item inventory display and update. All flows completed and all exceptions accounted for.
 			 4/5/15  1:20am - Finished Show Warehouse Contents
+			 4/5/15  7:00pm - Came up with 2 ways to do/show Available Space remaining. Both ways have been coded just need suggestions on which would be the best.
 
 
 */
@@ -540,7 +541,10 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 //Prototypes of functions go here:
 void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
 void logOut();
-void availableSpaceRemaining();
+
+void availableSpaceRemaining(vector<vector<Warehouse>> Warehouse1,vector<vector<Warehouse>> Warehouse2,vector<vector<Warehouse>> Warehouse3);
+void availableSpaceRemaining_WarehouseSpaces(vector<vector<Warehouse>> Warehouse, int counter, int Size);
+
 void inventoryValue();
 void searchHistoryLog();
 void itemInformationDisplay();
@@ -660,7 +664,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 		}
 
 		else if (menuResponse == 1){
-			availableSpaceRemaining();
+			availableSpaceRemaining(Warehouse1,Warehouse2,Warehouse3);
 		}
 
 		else if (menuResponse == 2){
@@ -696,11 +700,84 @@ void logOut(){//(BASE FUNCTIONALITY)if the user decides to log out, it will save
 	exit(0);//exit point of the program
 }
 
-void availableSpaceRemaining(){//(EXTRA FUNCTIONALITY:CODY) displays the remaining location in the designated warehouse
+void availableSpaceRemaining(vector<vector<Warehouse>> Warehouse1,vector<vector<Warehouse>> Warehouse2,vector<vector<Warehouse>> Warehouse3){//(EXTRA FUNCTIONALITY:CODY) Returns all open spaces available in the each warehouse.
+	/*We can have multiple ways of displaying this:
 
+	Example 1: Just how many empty are in each warehouse and size
 
-	cout << "TEST: Available Space Remaining functions go here."<<endl<<endl;
+	Warehouse 1:
+	Small: #, Medium #, Large: #
+
+	Warehouse 2:
+	Small: #, Medium #, Large: #
+	...
+	--------------------------------------
+	Example 2: Display each location that is empty followed by the total number.
+
+	Warehouse 1:
+	Small: 0,3,6,7,9,14,17,19
+	Total empty warehouse locations: 8
+
+	Medium: 1,3,5,7,9,20,56
+	Total empty warehouse locations: 7
+
+	Large: 0,1,2,3,4,5,6,7,8,9,10
+	Total empty warehouse locations: 11
+	...
+	--------------------------------------
+	*/
+	cout<<"\nWarehouse 1:"<<endl;
+	cout<<"\nSmall:";
+	availableSpaceRemaining_WarehouseSpaces(Warehouse1,0,0);
+
+	cout<<"\nMedium:";
+	availableSpaceRemaining_WarehouseSpaces(Warehouse1,0,1);
+
+	cout<<"\nLarge:";
+	availableSpaceRemaining_WarehouseSpaces(Warehouse1,0,2);
+
+	cout<<endl;
+	cout<<"\nWarehouse 2:"<<endl;
+	cout<<"\nSmall:";
+	availableSpaceRemaining_WarehouseSpaces(Warehouse2,0,0);
+
+	cout<<"\nMedium:";
+	availableSpaceRemaining_WarehouseSpaces(Warehouse2,0,1);
+
+	cout<<"\nLarge:";
+	availableSpaceRemaining_WarehouseSpaces(Warehouse2,0,2);
+
+	cout<<endl;
+	cout<<"\nWarehouse 3:"<<endl;
+	cout<<"\nSmall:";
+	availableSpaceRemaining_WarehouseSpaces(Warehouse3,0,0);
+
+	cout<<"\nMedium:";
+	availableSpaceRemaining_WarehouseSpaces(Warehouse3,0,1);
+
+	cout<<"\nLarge:";
+	availableSpaceRemaining_WarehouseSpaces(Warehouse3,0,2);
+
+	cout<<endl;
+	system("pause");
+	//cout << "TEST: Available Space Remaining functions go here."<<endl<<endl;
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
+}
+
+void availableSpaceRemaining_WarehouseSpaces(vector<vector<Warehouse>> Warehouse, int counter, int Size) {
+	
+	for(int i = 0; i<Warehouse.at(Size).size();i++){	
+		if (Warehouse[Size][i].ItemID == ""){
+			counter++;
+			
+			cout<< i;
+			if(i!=Warehouse.at(Size).size()-1){
+				cout<< ",";
+			}
+		}
+	}
+	cout<<"\nTotal empty warehouse locations: ";
+	cout<<counter<<endl;
 }
 
 void inventoryValue(){//(EXTRA FUNCTIONALITY:FERIQUE) displays the total value of all the items in the warehouses. 
