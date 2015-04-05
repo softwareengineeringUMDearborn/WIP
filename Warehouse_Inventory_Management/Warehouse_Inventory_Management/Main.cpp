@@ -1,5 +1,4 @@
 
-
 /*
 Warehouse Inventory Management System
 
@@ -12,6 +11,7 @@ Cody Carlson 3/11/15 5:30pm - Created the basic main menu structure.
 			 4/1/15  7:00pm - Fixed menu parameters.
 			 4/2/15  1:00am - Item inventory display and update Main flow is completed. Alternate flows are still work in progress. Mostly manually adding an item into the warehouse.
 			 4/3/15  8:15pm - Finished Item inventory display and update. All flows completed and all exceptions accounted for.
+			 4/5/15  1:20am - Finished Show Warehouse Contents
 
 
 */
@@ -549,7 +549,9 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 void itemInformationDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
 bool itemInformationDisplay_testCatalog(vector<CatalogItem>Catalog, string ItemId, string ItemSize);
 
-void showWarehouseContents();
+void showWarehouseContents(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1,vector<vector<Warehouse>> Warehouse2,vector<vector<Warehouse>> Warehouse3);
+void showWarehouseContents_ShowCatalogInfo(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse, string ItemID, string quantity, int location);
+
 void editItemCatalog();
 void addUser();
 
@@ -675,7 +677,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 			itemInventoryDisplay(Catalog, Warehouse1,Warehouse2,Warehouse3);
 		}
 		else if (menuResponse == 6){
-			showWarehouseContents();
+			showWarehouseContents(Catalog, Warehouse1,Warehouse2,Warehouse3);
 		}
 		else if (menuResponse == 7){
 			editItemCatalog();
@@ -1055,11 +1057,118 @@ bool itemInformationDisplay_testCatalog(vector<CatalogItem>Catalog, string ItemI
 }
 
 
-void showWarehouseContents(){//(BASE FUNCTIONALITY) Given a Warehouse and a location show the contents
+void showWarehouseContents(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1,vector<vector<Warehouse>> Warehouse2,vector<vector<Warehouse>> Warehouse3){//(BASE FUNCTIONALITY) Given a Warehouse and a location show the contents
 
+	string Answer;
+	string warehouseResponse;//the users response for what warehouse number
+	string sizeResponse;//the users response for what size type to look at
+	int sizeConverter; //Takes the S,M,L that the user enters and converts it to the row of the matrix
+	int locationResponse;//the users response for where in the vector to look.
 
-	cout << "TEST: Show Warehouse Contents functions go here."<<endl<<endl;
-	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
+	//Gather the input for the warehouse #
+		do{
+		cout<< "What warehouse number is the item located in (1,2,3)?";
+		cin>> warehouseResponse;
+		}while(warehouseResponse != "1" && warehouseResponse != "2" &&warehouseResponse != "3");//keep asking unless the answer is 1,2 or 3
+
+	//Gather the input for the item Size
+		do{
+		cout<< "What size type is the item (S,M,L)?";
+		cin>> sizeResponse;
+		}while(sizeResponse!="S" && sizeResponse!="M" && sizeResponse!="L");//keep asking unless the answer is S,M or L
+	
+		if(sizeResponse == "S")//convert the response to vector row
+			sizeConverter = 0;
+		else if(sizeResponse == "M")
+			sizeConverter = 1;
+		else if(sizeResponse == "L")
+			sizeConverter = 2;
+		else
+			cout<<"issue converting size to warehouse"<<endl;
+
+	//Gather the input for the item location
+		do{
+		cout<< "What location is the item in?";
+		while(!(cin>>locationResponse)){//so this clears the current input value and ignores the character value.
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Error: Enter a valid warehouse location."<<endl;
+			cout<< "What location is the item in?";
+		}
+		//Test boundaries
+		if(sizeResponse == "S" && locationResponse >=20 || sizeResponse == "S" && locationResponse <0 ||  sizeResponse == "L" && locationResponse >=20 || sizeResponse == "L" && locationResponse <0 || sizeResponse == "M" && locationResponse >=60|| sizeResponse == "M" && locationResponse <0 ){//if the item is out of the vector boundaries then notify.
+			cout<<"Invalid boundary. Small: 0-19, Medium: 0-59, Large: 0-19."<<endl;
+		}
+		}while(sizeResponse == "S" && locationResponse >=20 || sizeResponse == "S" && locationResponse <0 ||  sizeResponse == "L" && locationResponse >=20 || sizeResponse == "L" && locationResponse <0 || sizeResponse == "M" && locationResponse >=60|| sizeResponse == "M" && locationResponse <0 );//keep asking untill it is within boundaries
+
+	//Show the contents - search the catalog for all the information
+		if(warehouseResponse =="1"){//take the responses and output the item that is in that position
+			if(Warehouse1[sizeConverter][locationResponse].ItemID!="" && Warehouse1[sizeConverter][locationResponse].quantity != ""){//if there is an item in that location
+
+				showWarehouseContents_ShowCatalogInfo(Catalog, Warehouse1, Warehouse1[sizeConverter][locationResponse].ItemID, Warehouse1[sizeConverter][locationResponse].quantity, locationResponse);
+				
+			}
+			//check for spots without items
+			else if(Warehouse1[sizeConverter][locationResponse].ItemID=="" && Warehouse1[sizeConverter][locationResponse].quantity == ""){
+				cout<<"There is no item in this location."<<endl;
+			}
+		}
+		else if(warehouseResponse =="2"){//take the responses and output the item that is in that position
+			if(Warehouse2[sizeConverter][locationResponse].ItemID!="" && Warehouse2[sizeConverter][locationResponse].quantity != ""){//if there is an item in that location
+
+				showWarehouseContents_ShowCatalogInfo(Catalog, Warehouse2, Warehouse2[sizeConverter][locationResponse].ItemID, Warehouse2[sizeConverter][locationResponse].quantity, locationResponse);
+				
+			}
+			//check for spots without items
+			else if(Warehouse2[sizeConverter][locationResponse].ItemID=="" && Warehouse2[sizeConverter][locationResponse].quantity == ""){
+				cout<<"There is no item in this location."<<endl;
+			}
+		}
+		else if(warehouseResponse =="3"){//take the responses and output the item that is in that position
+			if(Warehouse3[sizeConverter][locationResponse].ItemID!="" && Warehouse3[sizeConverter][locationResponse].quantity != ""){//if there is an item in that location
+
+				showWarehouseContents_ShowCatalogInfo(Catalog, Warehouse3, Warehouse3[sizeConverter][locationResponse].ItemID, Warehouse3[sizeConverter][locationResponse].quantity, locationResponse);
+				
+			}
+			//check for spots without items
+			else if(Warehouse3[sizeConverter][locationResponse].ItemID=="" && Warehouse3[sizeConverter][locationResponse].quantity == ""){
+				cout<<"There is no item in this location."<<endl;
+			}
+		}
+		
+
+		//ask the user if he wants to look up another item.
+		do{
+		cout<< "Would you like to show the contents of another item (y/n)? ";
+		cin>> Answer;
+		if (Answer == "y"){
+			showWarehouseContents(Catalog, Warehouse1,Warehouse2,Warehouse3);
+		}
+		else if (Answer == "n"){
+			cout<<"Returning to the main menu"<<endl;
+						displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+		}
+
+		}while(Answer != "y" && Answer != "n");
+		
+}
+
+void showWarehouseContents_ShowCatalogInfo(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse, string ItemID, string quantity, int location){
+
+	for(int x=0;x<Catalog.size();x++)
+	{
+		if(ItemID==Catalog[x].ID)
+		{ //if the item is in the catalog then display its contents.
+			cout<<"Item ID found"<<endl<<endl;
+			cout<< "ID:          " + ItemID<<endl;
+			cout<< "Name:        " + Catalog[x].itemName<<endl;
+			cout<< "Price:       " + Catalog[x].itemPrice<<endl;
+			cout<< "Size:        " + Catalog[x].itemSize<<endl;
+			cout<< "Quantity:    " + quantity<<endl;
+			cout<< "Description: " + Catalog[x].itemDesc<<endl;
+		}
+	}
+
 }
 
 void editItemCatalog(){//(EXTRA FUNCTIONALITY: GROUP) Able to Add or Delete an item from the catalog. From SPMP, "Edits the valid item catalog, ensuring that the number of accepted items never exceeds 400."
