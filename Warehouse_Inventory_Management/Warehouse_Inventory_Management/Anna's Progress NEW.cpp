@@ -29,14 +29,19 @@ struct CatalogItem{
 
 struct ItemsOrdered{
 string ItemID;
+string ItemName;
+string ItemCost;
 string Warehouse;
 string Count;//Quantity Ordered
+string LocationFound;//can me more than one 
+vector<ItemsOrdered> MultipleLocations; //
 };
 
 struct ItemsShipped{
 string ItemID;
 string Warehouse;
-string Count;//Quantity Ordered less than 9
+string ItemName;
+string Count;//Quantity Sent
 };
 
 //left off here
@@ -60,7 +65,7 @@ struct Orders{
 struct Shipments{
 	string VendorName;
 	string VendorShippingDate;
-	string ItemCount;
+	string ItemCount;//must be less than 9
 	vector <ItemsShipped> ItemsShippedVector;
 };
 
@@ -110,13 +115,14 @@ vector<Shipments> loadShipments()
 
 		system("pause");
 		StoredDailyShipments.push_back(A);
+		A.ItemsShippedVector.clear();
 		getline(cat,sLine);
 	}
 
 	//check total number of items in trailer matches what was received
 	if(sLine.substr(1,1)== to_string(StoredDailyShipments.size()))
 	{
-		cout<<"All "<<StoredDailyShipments.size()<<" customers were processed.";
+		cout<<"All "<<StoredDailyShipments.size()<<" vendors were processed.";
 	}else cout<<"There was an error with the Catalog File. The Trailer number does not match the number of customers in the file.\n";
 
 	return StoredDailyShipments;
@@ -179,6 +185,7 @@ vector<Orders> loadOrders(){
 		A.CustomerDiscount = sLine.substr(30,3);
 		cout<<A.CustomerDiscount<<endl;
 		//read in items ordered
+		//importans fix
 		//IMPORTANT TO DISCUSS HOW TO LOOP THROUGH ITEMS
 		for(int x=0;x!= atoi(A.OrderItemCount.c_str()); x++){
 
@@ -197,6 +204,7 @@ vector<Orders> loadOrders(){
 		system("pause");
 		StoredDailyOrders.push_back(A);
 		getline(cat,sLine);
+		A.ItemsOrderedVector.clear();
 	}
 
 	//check total number of items in trailer matches what was received
@@ -340,17 +348,17 @@ void SetUpWarehouses(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehou
 	{
 		cout<<"Igot it";
 		getline(cat,sLine);
-		if(sLine.substr(0, 1)=="A")
+		if(sLine.substr(0, 1)=="S")
 		{
 			A.ItemID=sLine.substr(1,10);
 			A.quantity=sLine.substr(11);
 			ColumnSmall.push_back(A);
-		}else if(sLine.substr(0,1)=="B")
+		}else if(sLine.substr(0,1)=="M")
 		{
 			A.ItemID=sLine.substr(1,10);
 			A.quantity=sLine.substr(11);
 			ColumnMedium.push_back(A);
-		}else if(sLine.substr(0,1)=="C")
+		}else if(sLine.substr(0,1)=="L")
 		{
 			A.ItemID=sLine.substr(1,10);
 			A.quantity=sLine.substr(11);
@@ -372,17 +380,17 @@ void SetUpWarehouses(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehou
 		cout<<"Hi";
 		getline(cat,sLine);
 		cout<<"star";
-		if(sLine.substr(0, 1)=="A")
+		if(sLine.substr(0, 1)=="S")
 		{
 			A.ItemID=sLine.substr(1,10);
 			A.quantity=sLine.substr(11);
 			ColumnSmall.push_back(A);
-		}else if(sLine.substr(0,1)=="B")
+		}else if(sLine.substr(0,1)=="M")
 		{
 			A.ItemID=sLine.substr(1,10);
 			A.quantity=sLine.substr(11);
 			ColumnMedium.push_back(A);
-		}else if(sLine.substr(0,1)=="C")
+		}else if(sLine.substr(0,1)=="L")
 		{
 			A.ItemID=sLine.substr(1,10);
 			A.quantity=sLine.substr(11);
@@ -406,17 +414,17 @@ void SetUpWarehouses(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehou
 	{
 		cout<<"hi";
 		//getline(cat,sLine);
-		if(sLine.substr(0, 1)=="A")
+		if(sLine.substr(0, 1)=="S")
 		{
 			A.ItemID=sLine.substr(1,10);
 			A.quantity=sLine.substr(11);
 			ColumnSmall.push_back(A);
-		}else if(sLine.substr(0,1)=="B")
+		}else if(sLine.substr(0,1)=="M")
 		{
 			A.ItemID=sLine.substr(1,10);
 			A.quantity=sLine.substr(11);
 			ColumnMedium.push_back(A);
-		}else if(sLine.substr(0,1)=="C")
+		}else if(sLine.substr(0,1)=="L")
 		{
 			A.ItemID=sLine.substr(1,10);
 			A.quantity=sLine.substr(11);
@@ -448,12 +456,29 @@ void SetUpWarehouses(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehou
 	return;
 }
 
-bool SearchCatalog(vector<CatalogItem>&Catalog, string ItemId, string& ItemSize){
+//for Orders
+bool SearchCatalog(vector<CatalogItem>&Catalog, string ItemId, string& ItemSize, vector<Orders>&StoredDailyOrders, int k, int y){
 	for(int x=0;x<Catalog.size();x++)
 	{
 		if(ItemId==Catalog[x].ID)
 		{ //item valid
 			ItemSize=Catalog[x].itemSize;
+			StoredDailyOrders[k].ItemsOrderedVector[y].ItemName=Catalog[x].itemName;
+			StoredDailyOrders[k].ItemsOrderedVector[y].ItemCost=Catalog[x].itemPrice;
+			return true;
+		}
+	}
+	//item not valid
+	return false;
+}
+//for shipments
+bool SearchCatalog(vector<CatalogItem>&Catalog, string ItemId, string& ItemSize,  int k, int y){
+	for(int x=0;x<Catalog.size();x++)
+	{
+		if(ItemId==Catalog[x].ID)
+		{ //item valid
+			ItemSize=Catalog[x].itemSize;
+			//StoredDailyShipments[k].ItemsShippedVector[y].ItemName=Catalog[x].itemName;
 			return true;
 		}
 	}
@@ -461,79 +486,760 @@ bool SearchCatalog(vector<CatalogItem>&Catalog, string ItemId, string& ItemSize)
 	return false;
 }
 
+void CreateInvoice(vector<Orders> &StoredDailyOrders, vector<CatalogItem> Catalog)
+{
+	
+	//float subtotal=0;
+	cout<<endl<<endl;
+	for(int x=0; x<StoredDailyOrders.size();x++)
+	{
+		cout<<endl;
+		float subtotal=0;
+		cout<<StoredDailyOrders[x].CustomerID<<endl;
+		cout<<StoredDailyOrders[x].Cusomer_OR_EntityName<<endl;
+		cout<<StoredDailyOrders[x].CustomerStreetAddress<<endl;
+		cout<<StoredDailyOrders[x].CustomerCity<<" "<<StoredDailyOrders[x].CustomerState_OR_Province<<" "<<StoredDailyOrders[x].CustomerPostalCode<<endl;
+		cout<<endl;
+		cout<<"Customer ID:\t"<<StoredDailyOrders[x].CustomerID<<endl;
+		cout<<"Order ID:\t"<<StoredDailyOrders[x].CustomerOrderID<<endl;
+		cout<<"Order Date:\t"<<StoredDailyOrders[x].OrderDate<<endl;
+		cout<<"Shipping Date: WHat is this?"<<endl;
+		cout<<"Payment Type:\t"<<StoredDailyOrders[x].CustomerPaymentType<<endl;
+		cout<<endl;
+		cout<<"Item ID\t\tItem Name\t\t\tQuantity\tPrice\tItem total"<<endl;
+		cout<<"__________________________________________________________________________"<<endl;
+		for(int y=0;y<StoredDailyOrders[x].ItemsOrderedVector.size();y++){
+			cout<<StoredDailyOrders[x].ItemsOrderedVector[y].ItemID<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[y].ItemName<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<"\t$"<<StoredDailyOrders[x].ItemsOrderedVector[y].ItemCost;
+			for (int m=0;m<StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size();m++)
+			{
+				if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations[m].LocationFound=="BACKORDERED")
+				{ 
+					cout<<StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations[m].LocationFound<<endl;
+				}
+				else{
+					double itemTotal=atoi(StoredDailyOrders[x].ItemsOrderedVector[y].Count.c_str())*atoi(StoredDailyOrders[x].ItemsOrderedVector[y].ItemCost.c_str());
+				cout<<"\t$"<<itemTotal<<endl;
+				subtotal=subtotal+atoi(StoredDailyOrders[x].ItemsOrderedVector[y].Count.c_str())*atoi(StoredDailyOrders[x].ItemsOrderedVector[y].ItemCost.c_str());
+				}
+			}
+
+		}
+		string decdiscount="."+StoredDailyOrders[x].CustomerDiscount;
+		
+		double Discount=subtotal*stof(decdiscount);
+		
+		double OrderTotal=subtotal-Discount;
+		double Tax=OrderTotal*.06;
+		double AmountDue=OrderTotal+Tax;
+		cout<<endl;
+		cout<<"Subtotal\t\t\t\t $ "<<subtotal<<endl;
+		cout<<"\t\t\t\t\t ============"<<endl;
+		cout<<"Discount Percentage-"<<StoredDailyOrders[x].CustomerDiscount<<"%"<<"\t\t\t\t- $ "<<Discount<<endl;
+		cout<<"\t\t\t\t\t ============"<<endl;
+		cout<<"Order total\t\t\t"<<OrderTotal<<endl;
+		cout<<"Tax    6%\t\t\t"<<"+ $"<<Tax<<endl;
+		cout<<"\t\t\t\t\t ============"<<endl;
+		cout<<"AMOUNT DUE in "<<StoredDailyOrders[x].CustomerPaymentType<<"\t\t\t"<<"$ "<<AmountDue<<endl;
+		
+		
+		cout<<endl<<"END";
+	}
+	return;
+}
+
+void CreatePackingSlip(vector<Orders> &StoredDailyOrders, vector<CatalogItem> Catalog)
+{
+	bool W1=false;
+	bool W2=false;
+	bool W3=false;
+	//	for (int x=0;x<StoredDailyOrders.size();x++)
+	//{
+	//	/*for(int y=0;y<3;y++)
+	//	{
+	//		if
+	//	}*/
+	//	for(int y=0;y<StoredDailyOrders[x].ItemsOrderedVector.size();y++)
+	//	{
+	//		if(StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse=="1")W1=true;
+	//		if(StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse=="2")W2=true;
+	//		if(StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse=="3")W3=true;
+	//	}
+	//}
+	for (int x=0;x<StoredDailyOrders.size();x++)
+	{
+		W1=false;W2=false;W3=false;
+		for(int y=0;y<StoredDailyOrders[x].ItemsOrderedVector.size();y++)
+		{
+			if(StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse=="1")W1=true;
+			if(StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse=="2")W2=true;
+			if(StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse=="3")W3=true;
+		}
+		if(W1==true)
+		{
+			int itemCount=0;
+			int pickedCount=0;
+			cout<<endl<<endl<<endl;
+			cout<<"Customer ID:\t"<<StoredDailyOrders[x].CustomerID<<endl;
+			cout<<"Customer Name and Address:"<<endl;
+			cout<<StoredDailyOrders[x].CustomerID<<endl;
+			cout<<StoredDailyOrders[x].Cusomer_OR_EntityName<<endl;
+			cout<<StoredDailyOrders[x].CustomerStreetAddress<<endl;
+			cout<<StoredDailyOrders[x].CustomerCity<<StoredDailyOrders[x].CustomerState_OR_Province<<StoredDailyOrders[x].CustomerPostalCode<<" "<<StoredDailyOrders[x].CustomerCountry<<endl;
+			cout<<"Order ID:\t"<<StoredDailyOrders[x].CustomerOrderID<<endl;
+			cout<<"Order Date:\t"<<StoredDailyOrders[x].OrderDate<<endl;
+			cout<<"Shipping Date:\t What is this?"<<endl;
+
+			cout<<"Item ID\t Item Name\t\t Warehouse 1 Location\t Quantity\n";
+			cout<<"_____________________________________________________________________\n";
+			for(int k=0;k<StoredDailyOrders[x].ItemsOrderedVector.size();k++)
+			{
+				if(StoredDailyOrders[x].ItemsOrderedVector[k].Warehouse=="1")
+				{
+					itemCount++;
+				cout<<StoredDailyOrders[x].ItemsOrderedVector[k].ItemID<<"\t\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].ItemName<<"\t";
+				if(StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations.size()==1)
+				{
+					cout<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[0].LocationFound<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].Count<<endl;
+					pickedCount=pickedCount+atoi(StoredDailyOrders[x].ItemsOrderedVector[k].Count.c_str());
+
+				}
+				else{
+					int TOTAL=atoi(StoredDailyOrders[x].ItemsOrderedVector[k].Count.c_str());
+					int newTOT=TOTAL;
+					
+				for(int t=0;t<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations.size()-1;t++)
+				{
+					cout<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].LocationFound<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].Count<<endl<<"\t\t\t";
+					pickedCount=pickedCount+atoi(StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].Count.c_str());
+					newTOT=newTOT- atoi(StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].Count.c_str());
+				}
+				int lastplace=StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations.size()-1;
+				pickedCount=pickedCount+newTOT;
+				cout<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[lastplace].LocationFound<<"\t"<<newTOT<<"\n";
+				cout<<"\t\t\tTOTAL\t"<<TOTAL<<endl;
+				}
+			}
+			}
+			cout<<itemCount<<"items\t"<<pickedCount<<"quantity picked\n";
+		}
+		if(W2==true)
+		{
+			int itemCount=0;
+			int pickedCount=0;
+			cout<<endl<<endl<<endl;
+			cout<<"Customer ID:\t"<<StoredDailyOrders[x].CustomerID<<endl;
+			cout<<"Customer Name and Address:"<<endl;
+			cout<<StoredDailyOrders[x].CustomerID<<endl;
+			cout<<StoredDailyOrders[x].Cusomer_OR_EntityName<<endl;
+			cout<<StoredDailyOrders[x].CustomerStreetAddress<<endl;
+			cout<<StoredDailyOrders[x].CustomerCity<<StoredDailyOrders[x].CustomerState_OR_Province<<StoredDailyOrders[x].CustomerPostalCode<<" "<<StoredDailyOrders[x].CustomerCountry<<endl;
+			cout<<"Order ID:\t"<<StoredDailyOrders[x].CustomerOrderID<<endl;
+			cout<<"Order Date:\t"<<StoredDailyOrders[x].OrderDate<<endl;
+			cout<<"Shipping Date:\t What is this?"<<endl;
+
+			cout<<"Item ID\t Item Name\t\t Warehouse 2 Location\t Quantity\n";
+			cout<<"_____________________________________________________________________\n";
+			for(int k=0;k<StoredDailyOrders[x].ItemsOrderedVector.size();k++)
+			{
+				if(StoredDailyOrders[x].ItemsOrderedVector[k].Warehouse=="2")
+				{
+					itemCount++;
+				cout<<StoredDailyOrders[x].ItemsOrderedVector[k].ItemID<<"\t\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].ItemName<<"\t";
+				if(StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations.size()==1)
+				{
+					cout<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[0].LocationFound<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].Count<<endl;
+					pickedCount=pickedCount+atoi(StoredDailyOrders[x].ItemsOrderedVector[k].Count.c_str());
+
+				}
+				else{
+					int TOTAL=atoi(StoredDailyOrders[x].ItemsOrderedVector[k].Count.c_str());
+					int newTOT=TOTAL;
+					
+				for(int t=0;t<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations.size()-1;t++)
+				{
+					cout<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].LocationFound<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].Count<<endl<<"\t\t\t";
+					pickedCount=pickedCount+atoi(StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].Count.c_str());
+					newTOT=newTOT- atoi(StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].Count.c_str());
+				}
+				int lastplace=StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations.size()-1;
+				pickedCount=pickedCount+newTOT;
+				cout<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[lastplace].LocationFound<<"\t"<<newTOT<<"\n";
+				cout<<"\t\t\tTOTAL\t"<<TOTAL<<endl;
+				}
+			}
+			}
+			cout<<itemCount<<"items\t"<<pickedCount<<"quantity picked\n";
+		}
+		if(W3==true)
+		{
+			int itemCount=0;
+			int pickedCount=0;
+			cout<<endl<<endl<<endl;
+			cout<<"Customer ID:\t"<<StoredDailyOrders[x].CustomerID<<endl;
+			cout<<"Customer Name and Address:"<<endl;
+			cout<<StoredDailyOrders[x].CustomerID<<endl;
+			cout<<StoredDailyOrders[x].Cusomer_OR_EntityName<<endl;
+			cout<<StoredDailyOrders[x].CustomerStreetAddress<<endl;
+			cout<<StoredDailyOrders[x].CustomerCity<<StoredDailyOrders[x].CustomerState_OR_Province<<StoredDailyOrders[x].CustomerPostalCode<<" "<<StoredDailyOrders[x].CustomerCountry<<endl;
+			cout<<"Order ID:\t"<<StoredDailyOrders[x].CustomerOrderID<<endl;
+			cout<<"Order Date:\t"<<StoredDailyOrders[x].OrderDate<<endl;
+			cout<<"Shipping Date:\t What is this?"<<endl;
+
+			cout<<"Item ID\t Item Name\t\t Warehouse 3 Location\t Quantity\n";
+			cout<<"_____________________________________________________________________\n";
+			for(int k=0;k<StoredDailyOrders[x].ItemsOrderedVector.size();k++)
+			{
+				if(StoredDailyOrders[x].ItemsOrderedVector[k].Warehouse=="3")
+				{
+					itemCount++;
+				cout<<StoredDailyOrders[x].ItemsOrderedVector[k].ItemID<<"\t\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].ItemName<<"\t";
+				if(StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations.size()==1)
+				{
+					cout<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[0].LocationFound<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].Count<<endl;
+					pickedCount=pickedCount+atoi(StoredDailyOrders[x].ItemsOrderedVector[k].Count.c_str());
+
+				}
+				else{
+					int TOTAL=atoi(StoredDailyOrders[x].ItemsOrderedVector[k].Count.c_str());
+					int newTOT=TOTAL;
+				
+				for(int t=0;t<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations.size()-1;t++)
+				{
+					cout<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].LocationFound<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].Count<<endl<<"\t\t\t";
+					pickedCount=pickedCount+atoi(StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].Count.c_str());
+					newTOT=newTOT- atoi(StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[t].Count.c_str());
+				}
+				int lastplace=StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations.size()-1;
+				pickedCount=pickedCount+newTOT;
+				cout<<"\t"<<StoredDailyOrders[x].ItemsOrderedVector[k].MultipleLocations[lastplace].LocationFound<<"\t"<<newTOT<<"\n";
+				cout<<"\t\t\tTOTAL\t"<<TOTAL<<endl;
+				}
+			}
+			}
+			cout<<itemCount<<"items\t"<<pickedCount<<"quantity picked\n";
+		}
+	}
+}
+
 void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrders,vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3)
 {
+	ItemsOrdered A;
+	//vector<string> MultipleLocations;
 	string ItemSize;
 	for(int x=0;x<StoredDailyOrders.size();x++)
 	{
+		//int AmountSoFar=0;
+
 		cout<<"hello";
 		for(int y=0; y<StoredDailyOrders[x].ItemsOrderedVector.size();y++)
 		{   
+			int AmountSoFar=0;
 			cout<<"hihi\n";
 			//Check Catalog for legal item ordered
 			string ID=StoredDailyOrders[x].ItemsOrderedVector[y].ItemID;
-			if(SearchCatalog(Catalog,ID, ItemSize)==false)
+			if(SearchCatalog(Catalog,ID, ItemSize, StoredDailyOrders, x, y)==false)
 			{
 				cout<<"This item is not found in the Catalog and hence is not available at any of the Warehouses."<<endl;
+				StoredDailyOrders[x].ItemsOrderedVector[y].LocationFound="Invalid Item";
 			}
+		//nolongerusing?forgotwhati was doing	int ItemLocationsSpace=-1;
 			string WNum=StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse;
+			int AmountLeft= atoi(StoredDailyOrders[x].ItemsOrderedVector[y].Count.c_str());
 			cout<<"minnie\n";
+
+			int AmountOrdered= atoi(StoredDailyOrders[x].ItemsOrderedVector[y].Count.c_str());
+			int AmountAvailable = 0;
 			if(WNum=="1")
 			{
-				if(ItemSize=="A")
+				if(ItemSize=="S")
 				{
 					for(int k=0;k<Warehouse1.at(0).size();k++)
 					{
 						if(Warehouse1[0][k].ItemID==ID)
-						{
-							if(Warehouse1[0][k].quantity<StoredDailyOrders[x].ItemsOrderedVector[y].Count)
+						{ 
+							A.Count=Warehouse1[0][k].quantity;
+							A.LocationFound="S-0"+to_string(k);
+							cout<<"in here";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							AmountAvailable=AmountAvailable+ atoi( Warehouse1[0][k].quantity.c_str());
+							if(AmountOrdered<AmountAvailable)
 							{
-								cout<<"Insufficient ammount of item number "<< Warehouse1[0][k].ItemID<<" on hand for the order.";
-							}else{ int OnHand=atoi(Warehouse1[0][k].quantity.c_str());
-									int AmmountOrdered= atoi(StoredDailyOrders[x].ItemsOrderedVector[y].Count.c_str());
-								int NewQuant = OnHand - atoi(StoredDailyOrders[x].ItemsOrderedVector[y].Count.c_str());;
-								Warehouse1[0][k].quantity=to_string(NewQuant);
+								Warehouse1[0][k].quantity=to_string(atoi(Warehouse1[0][k].quantity.c_str())-AmountOrdered);
+								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
+								{
+								for(int i=0;i<=k;i++)
+								{
+									if(ID==Warehouse1[0][i].ItemID)
+									{
+										Warehouse1[0][i].quantity="0";
+									}
+								}
+								}
+								k=Warehouse1.at(0).size();
 							}
-								if(Warehouse1[0][k].quantity == "0") Warehouse1[0].erase(Warehouse1[0].begin() +k);
+
 						}
-				
+					
+						}
+					if(AmountAvailable<AmountOrdered)
+					{
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
+							A.LocationFound="BACKORDERED";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
 					}
-				}if(ItemSize=="B")
+						
+					}
+				//delete empty spaces
+					for(int l=0;l<Warehouse1.at(0).size();l++)
+					{
+						if(Warehouse1[0][l].quantity == "0") Warehouse1[0].erase(Warehouse1[0].begin() +l);
+					}
+
+
+				if(ItemSize=="M")
 				{
 					for(int k=0;k<Warehouse1.at(1).size();k++)
 					{
 						if(Warehouse1[1][k].ItemID==ID)
-						{
-							if(Warehouse1[1][k].quantity<StoredDailyOrders[x].ItemsOrderedVector[y].Count)
+						{ 
+							A.LocationFound="S-1"+to_string(k);
+							
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							AmountAvailable=AmountAvailable+ atoi( Warehouse1[1][k].quantity.c_str());
+							if(AmountOrdered<AmountAvailable)
 							{
-								cout<<"Insufficient ammount of item number "<< Warehouse1[1][k].ItemID<<" on hand for the order.";
-							}else Warehouse1[1][k].quantity = atoi(Warehouse1[1][k].quantity.c_str()); - atoi(StoredDailyOrders[x].ItemsOrderedVector[y].Count.c_str());
+								Warehouse1[0][k].quantity=to_string(atoi(Warehouse1[0][k].quantity.c_str())-AmountOrdered);
+								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
+								{
+								for(int i=0;i<=k;i++)
+								{
+									if(ID==Warehouse1[1][i].ItemID)
+									{
+										Warehouse1[1][i].quantity="0";
+									}
+								}
+								}
+								k=Warehouse1.at(1).size();
+							}
 
 						}
+					
+						}
+					if(AmountAvailable<AmountOrdered)
+					{
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
+							A.LocationFound="BACKORDERED";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
 					}
-				}if(ItemSize=="C")
-				{
-					for(int k=0;k<Warehouse1.at(2).size();k++)
+						//delete empty spaces
+					for(int l=0;l<Warehouse1.at(1).size();l++)
+					{
+						if(Warehouse1[1][l].quantity == "0") Warehouse1[1].erase(Warehouse1[1].begin() +l);
+					}	
+				}
+				if(ItemSize=="L")
+				{	for(int k=0;k<Warehouse1.at(2).size();k++)
 					{
 						if(Warehouse1[2][k].ItemID==ID)
-						{
-							if(Warehouse1[2][k].quantity<StoredDailyOrders[x].ItemsOrderedVector[y].Count)
+						{ 
+							A.LocationFound="S-2"+to_string(k);
+							cout<<"in here";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							AmountAvailable=AmountAvailable+ atoi( Warehouse1[2][k].quantity.c_str());
+							if(AmountOrdered<AmountAvailable)
 							{
-								cout<<"Insufficient ammount of item number "<< Warehouse1[2][k].ItemID<<" on hand for the order.";
-							}else Warehouse1[2][k].quantity = atoi(Warehouse1[2][k].quantity.c_str()); - atoi(StoredDailyOrders[x].ItemsOrderedVector[y].Count.c_str());
+								Warehouse1[0][k].quantity=to_string(atoi(Warehouse1[0][k].quantity.c_str())-AmountOrdered);
+								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
+								{
+								for(int i=0;i<=k;i++)
+								{
+									if(ID==Warehouse1[2][i].ItemID)
+									{
+										Warehouse1[2][i].quantity="0";
+									}
+								}
+								}
+								k=Warehouse1.at(2).size();
+							}
 
 						}
+					
+						}
+					if(AmountAvailable<AmountOrdered)
+					{
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
+							A.LocationFound="BACKORDERED";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
 					}
+					//delete empty spaces
+					for(int l=0;l<Warehouse1.at(2).size();l++)
+					{
+						if(Warehouse1[2][l].quantity == "0") Warehouse1[2].erase(Warehouse1[2].begin() +l);
+					}		
+				}
+			}
+			else if(WNum=="2")
+			{
+				if(ItemSize=="S")
+				{
+					for(int k=0;k<Warehouse2.at(0).size();k++)
+					{
+						if(Warehouse2[0][k].ItemID==ID)
+						{ 
+							A.LocationFound="S-0"+to_string(k);
+							cout<<"in here";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							AmountAvailable=AmountAvailable+ atoi( Warehouse2[0][k].quantity.c_str());
+							if(AmountOrdered<AmountAvailable)
+							{
+								Warehouse2[0][k].quantity=to_string(atoi(Warehouse2[0][k].quantity.c_str())-AmountOrdered);
+								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
+								{
+								for(int i=0;i<=k;i++)
+								{
+									if(ID==Warehouse2[0][i].ItemID)
+									{
+										Warehouse2[0][i].quantity="0";
+									}
+								}
+								}
+								k=Warehouse2.at(0).size();
+							}
+
+						}
+					
+						}
+					if(AmountAvailable<AmountOrdered)
+					{
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
+							A.LocationFound="BACKORDERED";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+					}
+						
+					}
+				//delete empty spaces
+					for(int l=0;l<Warehouse2.at(0).size();l++)
+					{
+						if(Warehouse2[0][l].quantity == "0") Warehouse2[0].erase(Warehouse2[0].begin() +l);
+					}
+
+
+				if(ItemSize=="M")
+				{
+					for(int k=0;k<Warehouse2.at(1).size();k++)
+					{
+						if(Warehouse2[1][k].ItemID==ID)
+						{ 
+							A.LocationFound="S-1"+to_string(k);
+							
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							AmountAvailable=AmountAvailable+ atoi( Warehouse2[1][k].quantity.c_str());
+							if(AmountOrdered<AmountAvailable)
+							{
+								Warehouse2[0][k].quantity=to_string(atoi(Warehouse2[0][k].quantity.c_str())-AmountOrdered);
+								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
+								{
+								for(int i=0;i<=k;i++)
+								{
+									if(ID==Warehouse2[1][i].ItemID)
+									{
+										Warehouse2[1][i].quantity="0";
+									}
+								}
+								}
+								k=Warehouse2.at(1).size();
+							}
+
+						}
+					
+						}
+					if(AmountAvailable<AmountOrdered)
+					{
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
+							A.LocationFound="BACKORDERED";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+					}
+						//delete empty spaces
+					for(int l=0;l<Warehouse2.at(1).size();l++)
+					{
+						if(Warehouse2[1][l].quantity == "0") Warehouse2[1].erase(Warehouse2[1].begin() +l);
+					}	
+				}
+				if(ItemSize=="L")
+				{	for(int k=0;k<Warehouse2.at(2).size();k++)
+					{
+						if(Warehouse2[2][k].ItemID==ID)
+						{ 
+							A.LocationFound="S-2"+to_string(k);
+							cout<<"in here";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							AmountAvailable=AmountAvailable+ atoi( Warehouse2[2][k].quantity.c_str());
+							if(AmountOrdered<AmountAvailable)
+							{
+								Warehouse2[0][k].quantity=to_string(atoi(Warehouse2[0][k].quantity.c_str())-AmountOrdered);
+								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
+								{
+								for(int i=0;i<=k;i++)
+								{
+									if(ID==Warehouse2[2][i].ItemID)
+									{
+										Warehouse2[2][i].quantity="0";
+									}
+								}
+								}
+								k=Warehouse2.at(2).size();
+							}
+
+						}
+					
+						}
+					if(AmountAvailable<AmountOrdered)
+					{
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
+							A.LocationFound="BACKORDERED";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+					}
+					//delete empty spaces
+					for(int l=0;l<Warehouse2.at(2).size();l++)
+					{
+						if(Warehouse2[2][l].quantity == "0") Warehouse2[2].erase(Warehouse2[2].begin() +l);
+					}		
+				}
+			} 
+			else if(WNum=="3")
+			{
+				if(ItemSize=="S")
+				{
+					for(int k=0;k<Warehouse3.at(0).size();k++)
+					{
+						if(Warehouse3[0][k].ItemID==ID)
+						{ 
+							A.LocationFound="S-0"+to_string(k);
+							cout<<"in here";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							AmountAvailable=AmountAvailable+ atoi( Warehouse3[0][k].quantity.c_str());
+							if(AmountOrdered<AmountAvailable)
+							{
+								Warehouse3[0][k].quantity=to_string(atoi(Warehouse3[0][k].quantity.c_str())-AmountOrdered);
+								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
+								{
+								for(int i=0;i<=k;i++)
+								{
+									if(ID==Warehouse3[0][i].ItemID)
+									{
+										Warehouse3[0][i].quantity="0";
+									}
+								}
+								}
+								k=Warehouse3.at(0).size();
+							}
+
+						}
+					
+						}
+					if(AmountAvailable<AmountOrdered)
+					{
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
+							A.LocationFound="BACKORDERED";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+					}
+						
+					}
+				//delete empty spaces
+					for(int l=0;l<Warehouse3.at(0).size();l++)
+					{
+						if(Warehouse3[0][l].quantity == "0") Warehouse3[0].erase(Warehouse3[0].begin() +l);
+					}
+
+
+				if(ItemSize=="M")
+				{
+					for(int k=0;k<Warehouse3.at(1).size();k++)
+					{
+						if(Warehouse3[1][k].ItemID==ID)
+						{ 
+							A.LocationFound="S-1"+to_string(k);
+							
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							AmountAvailable=AmountAvailable+ atoi( Warehouse3[1][k].quantity.c_str());
+							if(AmountOrdered<AmountAvailable)
+							{
+								Warehouse3[0][k].quantity=to_string(atoi(Warehouse3[0][k].quantity.c_str())-AmountOrdered);
+								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
+								{
+								for(int i=0;i<=k;i++)
+								{
+									if(ID==Warehouse3[1][i].ItemID)
+									{
+										Warehouse3[1][i].quantity="0";
+									}
+								}
+								}
+								k=Warehouse3.at(1).size();
+							}
+
+						}
+					
+						}
+					if(AmountAvailable<AmountOrdered)
+					{
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
+							A.LocationFound="BACKORDERED";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+					}
+						//delete empty spaces
+					for(int l=0;l<Warehouse3.at(1).size();l++)
+					{
+						if(Warehouse3[1][l].quantity == "0") Warehouse3[1].erase(Warehouse3[1].begin() +l);
+					}	
+				}
+				if(ItemSize=="L")
+				{	for(int k=0;k<Warehouse3.at(2).size();k++)
+					{
+						if(Warehouse3[2][k].ItemID==ID)
+						{ 
+							A.LocationFound="S-2"+to_string(k);
+							cout<<"in here";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							AmountAvailable=AmountAvailable+ atoi( Warehouse3[2][k].quantity.c_str());
+							if(AmountOrdered<AmountAvailable)
+							{
+								Warehouse3[0][k].quantity=to_string(atoi(Warehouse3[0][k].quantity.c_str())-AmountOrdered);
+								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
+								{
+								for(int i=0;i<=k;i++)
+								{
+									if(ID==Warehouse3[2][i].ItemID)
+									{
+										Warehouse3[2][i].quantity="0";
+									}
+								}
+								}
+								k=Warehouse3.at(2).size();
+							}
+
+						}
+					
+						}
+					if(AmountAvailable<AmountOrdered)
+					{
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
+							A.LocationFound="BACKORDERED";
+							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+					}
+					//delete empty spaces
+					for(int l=0;l<Warehouse3.at(2).size();l++)
+					{
+						if(Warehouse3[2][l].quantity == "0") Warehouse3[2].erase(Warehouse3[2].begin() +l);
+					}		
+				}
+			}
+
+		}
+
+	//	CreatePackingSlip(StoredDailyOrders, Catalog);
+	}
+
+		CreateInvoice(StoredDailyOrders, Catalog);
+		CreatePackingSlip(StoredDailyOrders, Catalog);
+	return;
+
+}
+
+void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDailyShipments,vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3)
+{
+	for(int x=0;x<StoredDailyShipments.size();x++)
+	{
+		for (int y=0;y<StoredDailyShipments[x].ItemsShippedVector.size();y++)
+		{
+			string ID=StoredDailyShipments[x].ItemsShippedVector[y].ItemID;
+			string itemSize;
+			string WarehouseID=StoredDailyShipments[x].ItemsShippedVector[y].Warehouse;
+			int k=0;
+			if(SearchCatalog(Catalog, ID, itemSize, x, y)==false)
+			{
+				cout<<"Invalid item "<<ID<<" shipped to the Warehouse. Return to Vendor: "<<StoredDailyShipments[x].VendorName<<endl;
+				//StoredDailyOrders[x].ItemsOrderedVector[y].LocationFound="Invalid Item";
+			
+			}
+			else
+			{
+				if(WarehouseID=="1")
+				{
+					if(itemSize=="S")
+					{
+					for(;k<Warehouse1.at(0).size();k++)
+					{
+
+
+						if(Warehouse1[0][k].ItemID==ID)
+						{
+							//for multiple location fills
+							int HowManyToFillLocation1=250-atoi(Warehouse1[0][k].quantity.c_str());	
+							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+						
+							if((atoi(Warehouse1[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<250)
+							{
+								int NewQuant=atoi(Warehouse1[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								Warehouse1[0][k].quantity=to_string(NewQuant);
+							}
+
+							else if(Warehouse1.at(0).size()<20)
+							{
+								AmountLeft=AmountLeft-HowManyToFillLocation1;
+								int HowManySpacesDoINeed=AmountLeft/250;
+								int SpacesLeft= 20 - (Warehouse1.at(0).size());
+								
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									Warehouse1[0][k].quantity = to_string(atoi(Warehouse1[0][k].quantity.c_str())+HowManyToFillLocation1);
+									
+								while(AmountLeft>250)
+								{
+									Warehouse A;
+									A.quantity="250";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-250;
+									Warehouse1[0].push_back(A);
+								}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse1[0].push_back(A);
+									k=Warehouse1.at(0).size();
+									y++;
+									
+								}
+								else cout<<"Insufficient space for "<<Warehouse1[0][k].ItemID<<"in Warehouse 1.\n";
+
+						}
+							else cout<<"Insufficient space for "<<Warehouse1[0][k].ItemID<<"in Warehouse 1.\n";
+
+
+
+						}
+
+					}
+					}
+
 				}
 
-		}else return;
+			}
+		}
 	}
 
 
 
-
-}
-	return;
 }
 
 //Main goes here:
@@ -553,7 +1259,12 @@ int main () {
 
 	SetUpWarehouses(Warehouse1, Warehouse2, Warehouse3, OrdersFileSequenceNumber, ShipmentsFileSequenceNumber);
 	cout<<"here";
+
 	ProcessOrders(Catalog, StoredDailyOrders, Warehouse1, Warehouse2, Warehouse3);
+	ProcessShipments(Catalog, StoredDailyShipments, Warehouse1, Warehouse2, Warehouse3);
+	
+	
+	
 	cout<<Warehouse1[0][0].ItemID<<"    here    +++"<<Warehouse1[0][0].quantity;
 	cout<<"Back in Main\n";
 	cout<<Warehouse1.at(0).size();
