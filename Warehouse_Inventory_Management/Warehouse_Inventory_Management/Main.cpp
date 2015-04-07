@@ -277,7 +277,7 @@ void logOut();
 void availableSpaceRemaining(vector<vector<Warehouse>> Warehouse1,vector<vector<Warehouse>> Warehouse2,vector<vector<Warehouse>> Warehouse3);
 void availableSpaceRemaining_WarehouseSpaces(vector<vector<Warehouse>> Warehouse, int counter, int Size);
 
-void inventoryValue();
+void inventoryValue(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3);
 void searchHistoryLog();
 void itemInformationDisplay();
 
@@ -1348,7 +1348,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 		}
 
 		else if (menuResponse == 2){
-			inventoryValue();
+			inventoryValue(Catalog, Warehouse1, Warehouse2, Warehouse3);
 		}
 
 		else if (menuResponse == 3){
@@ -1460,10 +1460,77 @@ void availableSpaceRemaining_WarehouseSpaces(vector<vector<Warehouse>> Warehouse
 	cout<<counter<<endl;
 }
 
-void inventoryValue(){//(EXTRA FUNCTIONALITY:FERIQUE) displays the total value of all the items in the warehouses. 
+void inventoryValue(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3){//(EXTRA FUNCTIONALITY:FERIQUE) displays the total value of all the items in the warehouses. 
+	float W1Qty[100], W1Price[100], W2Qty[100], W2Price[100], W3Qty[100], W3Price[100];
+	float Value1 = 0, Value2 = 0, Value3 = 0, W1Total= 0, W2Total = 0, W3Total = 0, GrandTotal = 0;
+	string tempID;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < Warehouse1.size(); j++)
+		{
+			tempID = Warehouse1[i][j].ItemID;
+			W1Qty[j] = atoi(Warehouse1[i][j].quantity.c_str());
+			for (int x = 0; x < Catalog.size(); x++)
+			{
+				if (tempID == Catalog[x].ID)
+				{
+					W1Price[j] = atoi(Catalog[x].itemPrice.c_str());
+					Value1 = W1Qty[j] * W1Price[j];
+					W1Total = Value1 + W1Total;
+				}
+			}
+		}	
+	}	
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < Warehouse2.size(); j++)
+		{
+			tempID = Warehouse2[i][j].ItemID;
+			cout << tempID << endl;
+			W2Qty[j] = atoi(Warehouse2[i][j].quantity.c_str());
+			for (int x = 0; x < Catalog.size(); x++)
+			{
+				if (tempID == Catalog[x].ID)
+				{
+					W2Price[j] = atoi(Catalog[x].itemPrice.c_str());
+					Value2 = W2Qty[j] * W2Price[j];
+					W2Total = Value2 + W2Total;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < Warehouse3.size(); j++)
+		{
+			tempID = Warehouse3[i][j].ItemID;
+			W3Qty[j] = atoi(Warehouse3[i][j].quantity.c_str());
+			for (int x = 0; x < Catalog.size(); x++)
+			{
+				if (tempID == Catalog[x].ID)
+				{
+					W3Price[j] = atoi(Catalog[x].itemPrice.c_str());
+					Value3 = W3Qty[j] * W3Price[j];
+					W3Total = Value3 + W3Total;
+				}
+			}
+		}
+	}
+	GrandTotal = W1Total + W2Total + W3Total;
+	cout << " ========================================" << endl;
+	cout << "             Warehouse Values            "<< endl;
+	cout << " ========================================" << endl;
+	cout << " Warehouse One:   $" << W1Total << "       " << endl; 
+	cout << " Warehouse Two:   $" << W2Total << "       " << endl;
+	cout << " Warehouse Three: $" << W3Total << "       " << endl;
+	cout << " ----------------------------------------" << endl;
+	cout << " Grand Total:     $" << GrandTotal << "      " << endl;
+	cout << " ========================================" << endl;
+	cout << endl;
+	system("pause");
+	
 
 
-	cout << "TEST: Inventory Value functions go here."<<endl<<endl;
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
 
