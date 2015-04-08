@@ -1,9 +1,11 @@
-OrdersFileSequenceNumber = 1;
-ShipmentFileSequenceNumber = 1;
+OrdersFileSequenceNumber = 1
+ShipmentFileSequenceNumber = 1
 Warehouse 1:
-A000000000110
-A000000000230
+S000000000115
+S000000000130
+S00000000015
+S000000000227
 Warehouse 2:
-A000000000334
-A00000000052
+S000000000334
+S00000000052
 Warehouse 3:

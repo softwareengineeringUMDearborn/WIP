@@ -1348,7 +1348,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 		}
 
 		else if (menuResponse == 2){
-			inventoryValue(Catalog, Warehouse1, Warehouse2, Warehouse3);
+			inventoryValue(Catalog,Warehouse1,Warehouse2,Warehouse3);
 		}
 
 		else if (menuResponse == 3){
