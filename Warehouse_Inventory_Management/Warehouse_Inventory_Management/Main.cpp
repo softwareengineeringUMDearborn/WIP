@@ -279,7 +279,7 @@ void availableSpaceRemaining_WarehouseSpaces(vector<vector<Warehouse>> Warehouse
 
 void inventoryValue(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3);
 void searchHistoryLog();
-void itemInformationDisplay();
+void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3);
 
 void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
 void itemInformationDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
@@ -1355,7 +1355,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 			searchHistoryLog();
 		}
 		else if (menuResponse == 4){
-			itemInformationDisplay();
+			itemInformationDisplay(Catalog, Warehouse1, Warehouse2, Warehouse3);
 		}
 		else if (menuResponse == 5){
 			itemInventoryDisplay(Catalog, Warehouse1,Warehouse2,Warehouse3);
@@ -1541,12 +1541,115 @@ void searchHistoryLog(){//(EXTRA FUNCTIONALITY:ZACH) Search the History log for 
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
 
-void itemInformationDisplay(){//(BASE FUNCTIONALITY) The inventory analyst is able to update the item name, id, price, stock, and size type.
+void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) The inventory analyst is able to update the item name, id, price, stock, and size type.
+	string Answer; // Answer for if they wish to proceed. 
+	string itemID; // The Item they want to edit. 
+	string Metric; // The metric they wish to edit
+	int selection;
+	string tempID; 
+	string tempName;
+	string tempDesc;
+	string tempPrice;
+	string tempSize;
+	string newID; 
+	string newName;
+	string newDesc;
+	string newPrice;
+	string newSize;
 
 
-	cout << "TEST: Item Information display and update functions go here."<<endl<<endl;
-	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
-}
+	cout << "Would you like to edit an item metric? <y/n>" << endl;
+	cin >> Answer;
+		
+		if (Answer == "y")
+		{
+			cout << "What is the item ID of the item to edit?" << endl;
+			cin >> itemID;
+			
+			for(int x=0;x<Catalog.size();x++)
+			{
+				if(itemID==Catalog[x].ID)
+				{
+				cout << "Item ID found." <<endl;
+				tempID = itemID;
+				tempName = Catalog[x].itemName;
+				tempPrice = Catalog[x].itemPrice;
+				tempDesc = Catalog[x].itemDesc;
+				{
+					{
+					do 
+					{
+						cout << "What would you like to edit? " << endl;
+						cout << "1. Edit Item ID" << endl;
+						cout << "2. Edit Item Name" << endl;
+						cout << "3. Edit Item Price" << endl;
+						cout << "4. Edit Size" << endl;
+						cout << "5. Edit Description" << endl;
+						cout << "6. Exit" << endl;
+						cin >> selection;
+						
+						switch (selection) 
+							{
+							case 1:
+								cout << "Current ID: " << Catalog[x].ID << endl;
+								cout << "Enter new ID: " << endl;
+								cin >> newID;
+								Catalog[x].ID = newID;
+								cout << "Item Changed." << endl;
+								cout << "New item ID: " << Catalog[x].ID << endl;
+								break;
+							case 2:
+								cout << "Current Name: " << Catalog[x].itemName << endl;
+								cout << "Enter new item name: " << endl;
+								cin >> newName;
+								Catalog[x].itemName = newName;
+								cout << "Item Changed." << endl;
+								cout << "New Item Name: " << Catalog[x].itemName << endl;
+								break;
+							case 3:
+								cout << "Current Price: " << Catalog[x].itemPrice << endl;
+								cout << "Enter new price: " << endl;
+								cin >> newPrice;
+								Catalog[x].itemPrice = newPrice;
+								cout << "Item Changed." << endl;
+								cout << "New Item Price: " << Catalog[x].itemPrice << endl;
+								break;
+							case 4:
+								cout << "Current Size: " << Catalog[x].itemSize << endl;
+								cout << "Enter new Size: " << endl;
+								cin >> newSize;
+								Catalog[x].itemSize = newSize;
+								cout << "Item Changed." << endl;
+								cout << "New Item Size: " << Catalog[x].itemSize << endl;
+								break;
+							case 5:
+								cout << "Current Description: " << Catalog[x].itemDesc << endl;
+								cout << "Enter new description: " << endl;
+								cin >> newDesc;
+								Catalog[x].itemDesc = newDesc;
+								cout << "Item Changed." << endl;
+								cout << "New Item Description: " << Catalog[x].itemDesc << endl;
+								break;
+
+							default: cout << selection << " is not a valid menu item." << endl;
+								break;
+							}
+						}
+					while (selection != 6);
+					}
+				}
+			}
+			else
+			{
+			}
+			}
+		}
+		else if (Answer == "n") 
+		{
+		cout<<"Returning to the main menu"<<endl;
+		}
+}                                                                                                                                    
+
 
 void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
 	
