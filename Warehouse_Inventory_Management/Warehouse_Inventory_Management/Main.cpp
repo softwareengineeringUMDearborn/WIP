@@ -506,11 +506,11 @@ void availableSpaceRemaining_WarehouseSpaces(vector<vector<Warehouse>> Warehouse
 
 void inventoryValue(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3);
 void searchHistoryLog();
-void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3);
+void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1, vector<vector<Warehouse>>& Warehouse2, vector<vector<Warehouse>>& Warehouse3);
 
 void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
-void itemInformationDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
-bool itemInformationDisplay_testCatalog(vector<CatalogItem>Catalog, string ItemId, string ItemSize);
+void itemInventoryDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3);
+bool itemInventoryDisplay_testCatalog(vector<CatalogItem>Catalog, string ItemId, string ItemSize);
 
 void showWarehouseContents(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1,vector<vector<Warehouse>> Warehouse2,vector<vector<Warehouse>> Warehouse3);
 void showWarehouseContents_ShowCatalogInfo(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse, string ItemID, string quantity, int location);
@@ -1884,6 +1884,8 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 	string warehouseResponse;//the users response for what warehouse number
 	string sizeResponse;//the users response for what size type to look at
 	int sizeConverter; //Takes the S,M,L that the user enters and converts it to the row of the matrix
+	string testLocation;
+	string tryAgainResponse;
 	int locationResponse;//the users response for where in the vector to look.
 	int quantityResponse;//the users response for what to change the quantity to?
 
@@ -1892,7 +1894,7 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 	int newQuantity; //the variable that the user will enter to add to the warehouse
 	bool validID; // a check to see if the new item is in the catalog
 
-	itemInformationDisplay_WarehouseContents(Warehouse1, Warehouse2, Warehouse3);//Display the warehouse to the user.
+	itemInventoryDisplay_WarehouseContents(Warehouse1, Warehouse2, Warehouse3);//Display the warehouse to the user.
 
 	do{
 	cout<< "Would you like to edit a quantity (y/n)? ";
@@ -1900,14 +1902,26 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 
 	if(Answer == "y"){//if the answer is y then continue on to the next question
 		do{
-		cout<< "What warehouse number is the item located in (1,2,3)?";
+		cout<< "What warehouse number is the item located in (1,2,3,EXIT)? ";
 		cin>> warehouseResponse;
+
+		if(warehouseResponse == "EXIT"){//if the response is EXIT return to the main menu
+			cout<< "Returning to the main menu."<<endl;
+			displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+		}
+
 		}while(warehouseResponse != "1" && warehouseResponse != "2" &&warehouseResponse != "3");//keep asking unless the answer is 1,2 or 3
 
 	
 		do{
-		cout<< "What size type is the item (S,M,L)?";
+		cout<< "What size type is the item (S,M,L,EXIT)? ";
 		cin>> sizeResponse;
+
+		if(sizeResponse == "EXIT"){//if the response is EXIT return to the main menu
+			cout<< "Returning to the main menu."<<endl;
+			displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+		}
+
 		}while(sizeResponse!="S" && sizeResponse!="M" && sizeResponse!="L");//keep asking unless the answer is S,M or L
 	
 		if(sizeResponse == "S")//convert the response to vector row
@@ -1922,16 +1936,22 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 
 		//Determine the location of the item
 		do{
-		cout<< "What location is the item in?";
+		cout<< "What location is the item in (-1 to return to main menu) ? ";
 		while(!(cin>>locationResponse)){//so this clears the current input value and ignores the character value.
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			cout << "Error: Enter a valid warehouse location."<<endl;
-			cout<< "What location is the item in?";
+			cout << "Error: Invalid warehouse location."<<endl;
+			cout<< "What location is the item in (-1 to return to main menu) ? ";
 		}
+
 		//cin>> locationResponse;
 		//Test boundaries
 		if(sizeResponse == "S" && locationResponse >=20 || sizeResponse == "S" && locationResponse <0 ||  sizeResponse == "L" && locationResponse >=20 || sizeResponse == "L" && locationResponse <0 || sizeResponse == "M" && locationResponse >=60|| sizeResponse == "M" && locationResponse <0 ){//if the item is out of the vector boundaries then notify.
+			if(locationResponse == -1){
+				cout<< "Returning to the main menu."<<endl;
+			displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+			}
+			else
 			cout<<"Invalid boundary. Small: 0-19, Medium: 0-59, Large: 0-19."<<endl;
 		}
 		}while(sizeResponse == "S" && locationResponse >=20 || sizeResponse == "S" && locationResponse <0 ||  sizeResponse == "L" && locationResponse >=20 || sizeResponse == "L" && locationResponse <0 || sizeResponse == "M" && locationResponse >=60|| sizeResponse == "M" && locationResponse <0 );//keep asking untill it is within boundaries
@@ -1949,7 +1969,7 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 				cin>>addItemResponse;
 
 				if (addItemResponse == "n"){
-					cout<<"Returning to the main menu"<<endl;
+					cout<<"Returning to the main menu."<<endl;
 					displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 				}
 				else if(addItemResponse == "y"){
@@ -1957,10 +1977,10 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 					cout<<"Enter an Item ID (EXIT to return to main menu): ";
 					cin>> newID;
 					if(newID == "EXIT"){
-						cout<<"Returning to the main menu"<<endl;
+						cout<<"Returning to the main menu."<<endl;
 						displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 					}
-					validID =itemInformationDisplay_testCatalog(Catalog,newID, sizeResponse);
+					validID =itemInventoryDisplay_testCatalog(Catalog,newID, sizeResponse);
 					if(validID ==false){
 						cout<<"This Item ID and size combination is not in the catalog, please try again."<<endl;
 					}
@@ -1985,7 +2005,7 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 				cin>>addItemResponse;
 
 				if (addItemResponse == "n"){//if they dont want to add a new one go back to menu
-					cout<<"Returning to the main menu"<<endl;
+					cout<<"Returning to the main menu."<<endl;
 					displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 				}
 				else if(addItemResponse == "y"){
@@ -1993,10 +2013,10 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 					cout<<"Enter an Item ID (EXIT to return to main menu): ";
 					cin>> newID;
 					if(newID == "EXIT"){
-						cout<<"Returning to the main menu"<<endl;
+						cout<<"Returning to the main menu."<<endl;
 						displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 					}
-					validID =itemInformationDisplay_testCatalog(Catalog,newID, sizeResponse);
+					validID =itemInventoryDisplay_testCatalog(Catalog,newID, sizeResponse);
 					if(validID ==false){
 						cout<<"This Item ID and size combination is not in the catalog, please try again."<<endl;
 					}
@@ -2021,7 +2041,7 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 				cin>>addItemResponse;
 
 				if (addItemResponse == "n"){//if they dont want to add a new one go back to menu
-					cout<<"Returning to the main menu"<<endl;
+					cout<<"Returning to the main menu."<<endl;
 					displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 				}
 				else if(addItemResponse == "y"){
@@ -2029,10 +2049,10 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 					cout<<"Enter an Item ID (EXIT to return to main menu): ";
 					cin>> newID;
 					if(newID == "EXIT"){
-						cout<<"Returning to the main menu"<<endl;
+						cout<<"Returning to the main menu."<<endl;
 						displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 					}
-					validID =itemInformationDisplay_testCatalog(Catalog,newID, sizeResponse);
+					validID =itemInventoryDisplay_testCatalog(Catalog,newID, sizeResponse);
 					if(validID ==false){
 						cout<<"This Item ID and size combination is not in the catalog, please try again."<<endl;
 					}
@@ -2048,67 +2068,97 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 		}
 
 		do{//obtain the quantity to override the old quantity
-		cout<< "What quantity would you like to change it to?"<<endl;
+		cout<< "What quantity would you like to change it to (-1 to return to main menu)? ";
 		while(!(cin>>quantityResponse)){//so this clears the current input value and ignores the character value.
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			cout << "Error: Enter a valid quantity."<<endl;
-			cout<< "What quantity would you like to change it to?";
+			cout<< "What quantity would you like to change it to (-1 to return to main menu)? ";
 		}
 
 		
 		//the mainflow path
 		if(warehouseResponse =="1"){
-			if(quantityResponse <= 0){//if the input is less than or equal to 0 delete the item from the warehouse.
+			if(quantityResponse == 0){//if the input is 0 delete the item from the warehouse.
 				Warehouse1[sizeConverter][locationResponse].ItemID = "";//delete the id from the warehouse
 				Warehouse1[sizeConverter][locationResponse].quantity = "";//delete the quantity from the warehouse
 				cout<<"Item deleted."<<endl;
 			}
+			else if(quantityResponse <= -2){//if the input is less than or equal to 0 delete the item from the warehouse.
+				cout<<"Quantity too small. Small: 0-250, Medium: 0-100, Large: 0-10."<<endl;
+			}
 			else if (sizeResponse == "S" && quantityResponse >250 || sizeResponse == "M" && quantityResponse >100 || sizeResponse == "L" && quantityResponse >10){//if the quantity is more then boundaries then notify them
 				cout<<"Quantity too large. Small: 0-250, Medium: 0-100, Large: 0-10."<<endl;
+			}
+			else if(quantityResponse == -1){//if the user exits
+				if(Warehouse1[sizeConverter][locationResponse].ItemID != "" && Warehouse1[sizeConverter][locationResponse].quantity == ""){//if they are trying to add a new Id but decide to quit, make sure to delete the new ID from the warehouse.
+					Warehouse1[sizeConverter][locationResponse].ItemID = "";
+				}
+				cout<<"Returning to the main menu."<<endl;
+						displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 			}
 			else//main flow path
 				Warehouse1[sizeConverter][locationResponse].quantity = to_string(quantityResponse);
 		}
 		else if(warehouseResponse =="2"){
-			if(quantityResponse <= 0){
+			if(quantityResponse == 0){
 				Warehouse2[sizeConverter][locationResponse].ItemID = "";
 				Warehouse2[sizeConverter][locationResponse].quantity = "";
 				cout<<"Item deleted."<<endl;
 			}
+			else if(quantityResponse <= -2){//if the input is less than or equal to 0 delete the item from the warehouse.
+				cout<<"Quantity too small. Small: 0-250, Medium: 0-100, Large: 0-10."<<endl;
+			}
 			else if (sizeResponse == "S" && quantityResponse >250|| sizeResponse == "M" && quantityResponse >100 || sizeResponse == "L" && quantityResponse >10){
 				cout<<"Quantity too large. Small: 0-250, Medium: 0-100, Large: 0-10."<<endl;
+			}
+			else if(quantityResponse == -1){//if the user exits
+				if(Warehouse2[sizeConverter][locationResponse].ItemID != "" && Warehouse2[sizeConverter][locationResponse].quantity == ""){//if they are trying to add a new Id but decide to quit, make sure to delete the new ID from the warehouse.
+					Warehouse2[sizeConverter][locationResponse].ItemID = "";
+				}
+				cout<<"Returning to the main menu."<<endl;
+						displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 			}
 			else
 				Warehouse2[sizeConverter][locationResponse].quantity = to_string(quantityResponse);
 		}
 		else if(warehouseResponse =="3"){
-			if(quantityResponse <=0){
+			if(quantityResponse ==0){
 				Warehouse3[sizeConverter][locationResponse].ItemID = "";
 				Warehouse3[sizeConverter][locationResponse].quantity = "";
 				cout<<"Item deleted."<<endl;
 			}
+			else if(quantityResponse <= -2){//if the input is less than or equal to 0 delete the item from the warehouse.
+				cout<<"Quantity too small. Small: 0-250, Medium: 0-100, Large: 0-10."<<endl;
+			}
 			else if (sizeResponse == "S" && quantityResponse >250 || sizeResponse == "M" && quantityResponse >100 || sizeResponse == "L" && quantityResponse >10){
 				cout<<"Quantity too large. Small: 0-250, Medium: 0-100, Large: 0-10."<<endl;
+			}
+			else if(quantityResponse == -1){//if the user exits
+				if(Warehouse3[sizeConverter][locationResponse].ItemID != "" && Warehouse3[sizeConverter][locationResponse].quantity == ""){//if they are trying to add a new Id but decide to quit, make sure to delete the new ID from the warehouse.
+					Warehouse3[sizeConverter][locationResponse].ItemID = "";
+				}
+				cout<<"Returning to the main menu."<<endl;
+						displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 			}
 			else
 				Warehouse3[sizeConverter][locationResponse].quantity = to_string(quantityResponse);
 		}
 
-		}while(sizeResponse == "S" && quantityResponse >250 || sizeResponse == "M" && quantityResponse >100 || sizeResponse == "L" && quantityResponse >10);
+		}while(sizeResponse == "S" && quantityResponse >250 || sizeResponse == "S" && quantityResponse <= -1 || sizeResponse == "M" && quantityResponse >100 || sizeResponse == "M" && quantityResponse <= -1 || sizeResponse == "L" && quantityResponse >10 || sizeResponse == "L" && quantityResponse <= -1);
 
 	}
 
 	//if the ansewr is no then return to the main menu
 	else if(Answer == "n"){
-		cout<<"Returning to the main menu"<<endl;
+		cout<<"Returning to the main menu."<<endl;
 	
 	}
 	}while(Answer != "y" && Answer != "n");
 	
 }
 
-void itemInformationDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
+void itemInventoryDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
 	
 	cout<<"\nWarehouse 1 Small:"<<endl;
 	for(int i = 0; i<Warehouse1.at(0).size();i++){	
@@ -2192,7 +2242,7 @@ void itemInformationDisplay_WarehouseContents(vector<vector<Warehouse>>& Warehou
 
 }
 
-bool itemInformationDisplay_testCatalog(vector<CatalogItem>Catalog, string ItemId, string ItemSize){
+bool itemInventoryDisplay_testCatalog(vector<CatalogItem>Catalog, string ItemId, string ItemSize){//Search the catalog for the correct ID and size values
 	for(int x=0;x<Catalog.size();x++)
 	{
 		if(ItemId==Catalog[x].ID)
@@ -2221,14 +2271,22 @@ void showWarehouseContents(vector<CatalogItem>Catalog, vector<vector<Warehouse>>
 
 	//Gather the input for the warehouse #
 		do{
-		cout<< "What warehouse number is the item located in (1,2,3)?";
+		cout<< "What warehouse number is the item located in (1,2,3,EXIT)? ";
 		cin>> warehouseResponse;
+		if(warehouseResponse == "EXIT"){//if the response is EXIT return to the main menu
+			cout<< "Returning to the main menu."<<endl;
+			displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+		}
 		}while(warehouseResponse != "1" && warehouseResponse != "2" &&warehouseResponse != "3");//keep asking unless the answer is 1,2 or 3
 
 	//Gather the input for the item Size
 		do{
-		cout<< "What size type is the item (S,M,L)?";
+		cout<< "What size type is the item (S,M,L,EXIT)? ";
 		cin>> sizeResponse;
+		if(sizeResponse == "EXIT"){//if the response is EXIT return to the main menu
+			cout<< "Returning to the main menu."<<endl;
+			displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+		}
 		}while(sizeResponse!="S" && sizeResponse!="M" && sizeResponse!="L");//keep asking unless the answer is S,M or L
 	
 		if(sizeResponse == "S")//convert the response to vector row
@@ -2242,15 +2300,19 @@ void showWarehouseContents(vector<CatalogItem>Catalog, vector<vector<Warehouse>>
 
 	//Gather the input for the item location
 		do{
-		cout<< "What location is the item in?";
+		cout<< "What location is the item in (-1 to return to the main menu)? ";
 		while(!(cin>>locationResponse)){//so this clears the current input value and ignores the character value.
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			cout << "Error: Enter a valid warehouse location."<<endl;
-			cout<< "What location is the item in?";
+			cout<< "What location is the item in (-1 to return to the main menu)? ";
 		}
 		//Test boundaries
 		if(sizeResponse == "S" && locationResponse >=20 || sizeResponse == "S" && locationResponse <0 ||  sizeResponse == "L" && locationResponse >=20 || sizeResponse == "L" && locationResponse <0 || sizeResponse == "M" && locationResponse >=60|| sizeResponse == "M" && locationResponse <0 ){//if the item is out of the vector boundaries then notify.
+			if(locationResponse == -1){
+				cout<< "Returning to the main menu."<<endl;
+			displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+			}
 			cout<<"Invalid boundary. Small: 0-19, Medium: 0-59, Large: 0-19."<<endl;
 		}
 		}while(sizeResponse == "S" && locationResponse >=20 || sizeResponse == "S" && locationResponse <0 ||  sizeResponse == "L" && locationResponse >=20 || sizeResponse == "L" && locationResponse <0 || sizeResponse == "M" && locationResponse >=60|| sizeResponse == "M" && locationResponse <0 );//keep asking untill it is within boundaries
@@ -2299,7 +2361,7 @@ void showWarehouseContents(vector<CatalogItem>Catalog, vector<vector<Warehouse>>
 			showWarehouseContents(Catalog, Warehouse1,Warehouse2,Warehouse3);
 		}
 		else if (Answer == "n"){
-			cout<<"Returning to the main menu"<<endl;
+			cout<<"Returning to the main menu."<<endl;
 						displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
 		}
 
@@ -2324,6 +2386,7 @@ void showWarehouseContents_ShowCatalogInfo(vector<CatalogItem>Catalog, vector<ve
 	}
 
 }
+
 
 
 void AddToLogFile(string itemNumber, string warehouse, int quantity, string INorOUT, string date)
