@@ -1389,6 +1389,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 	{
 		for (int y=0;y<StoredDailyShipments[x].ItemsShippedVector.size();y++)
 		{
+			bool Store=false;
 			string ID=StoredDailyShipments[x].ItemsShippedVector[y].ItemID;
 			string itemSize;
 			string WarehouseID=StoredDailyShipments[x].ItemsShippedVector[y].Warehouse;
@@ -1407,18 +1408,18 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 					{
 					for(;k<Warehouse1.at(0).size();k++)
 					{
-
-
 						if(Warehouse1[0][k].ItemID==ID)
 						{
 							//for multiple location fills
 							int HowManyToFillLocation1=250-atoi(Warehouse1[0][k].quantity.c_str());	
 							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
 						
+							//check if it can all fill in the same small spot;
 							if((atoi(Warehouse1[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<250)
 							{
 								int NewQuant=atoi(Warehouse1[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse1[0][k].quantity=to_string(NewQuant);
+								Store=true;
 							}
 
 							else if(Warehouse1.at(0).size()<20)
@@ -1438,6 +1439,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									A.ItemID=ID;
 									AmountLeft=AmountLeft-250;
 									Warehouse1[0].push_back(A);
+									Store=true;
 								}
 									Warehouse A;
 									A.quantity=to_string(AmountLeft);
@@ -1445,7 +1447,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									A.ItemID=ID;
 									Warehouse1[0].push_back(A);
 									k=Warehouse1.at(0).size();
-									y++;
+									Store=true;
+									//y++;
 									
 								}
 								else cout<<"Insufficient space for "<<Warehouse1[0][k].ItemID<<"in Warehouse 1.\n";
@@ -1455,20 +1458,720 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 
 
 
+						} }
+					if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+							{
+							if(k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+							{
+								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+								int HowManySpacesDoINeed=AmountLeft/250;
+								int SpacesLeft= 20 - (Warehouse1.at(0).size());
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									while(AmountLeft>250)
+									{
+									Warehouse A;
+									A.quantity="250";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-250;
+									Warehouse1[0].push_back(A);
+									Store=true;
+									}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse1[0].push_back(A);
+									k=Warehouse1.at(0).size();
+									Store=true;
+								}
+							}
+							}
+					}else if(itemSize=="M")
+					{
+					for(;k<Warehouse1.at(1).size();k++)
+					{
+						if(Warehouse1[1][k].ItemID==ID)
+						{
+							//for multiple location fills
+							int HowManyToFillLocation1=100-atoi(Warehouse1[1][k].quantity.c_str());	
+							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+						
+							if((atoi(Warehouse1[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<100)
+							{
+								int NewQuant=atoi(Warehouse1[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								Warehouse1[1][k].quantity=to_string(NewQuant);
+								Store= true;
+							}
+
+							else if(Warehouse1.at(1).size()<60)
+							{
+								AmountLeft=AmountLeft-HowManyToFillLocation1;
+								int HowManySpacesDoINeed=AmountLeft/100;
+								int SpacesLeft= 60 - (Warehouse1.at(1).size());
+								
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									Warehouse1[1][k].quantity = to_string(atoi(Warehouse1[1][k].quantity.c_str())+HowManyToFillLocation1);
+									
+								while(AmountLeft>100)
+								{
+									Warehouse A;
+									A.quantity="100";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-100;
+									Warehouse1[1].push_back(A);
+									Store=true;
+								}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse1[1].push_back(A);
+									k=Warehouse1.at(1).size();
+									Store=true;
+									//y++;
+									
+								}
+								else cout<<"Insufficient space for "<<Warehouse1[1][k].ItemID<<"in Warehouse 1.\n";
+
+						}
+							else cout<<"Insufficient space for "<<Warehouse1[1][k].ItemID<<"in Warehouse 1.\n";
+						}
+					}
+						if (Store!=true)
+							{
+							if(k==Warehouse1.at(1).size() && Warehouse1.at(1).size()<60)
+							{
+								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+								int HowManySpacesDoINeed=AmountLeft/100;
+								int SpacesLeft= 60 - (Warehouse1.at(1).size());
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									while(AmountLeft>100)
+									{
+									Warehouse A;
+									A.quantity="100";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-100;
+									Warehouse1[1].push_back(A);
+									Store=true;
+									}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse1[1].push_back(A);
+									k=Warehouse1.at(1).size();
+									Store=true;
+								}
+							}
+							}
+					}
+					else if(itemSize=="L")
+					{
+					for(;k<Warehouse1.at(2).size();k++)
+					{
+						if(Warehouse1[2][k].ItemID==ID)
+						{
+							//for multiple location fills
+							int HowManyToFillLocation1=100-atoi(Warehouse1[2][k].quantity.c_str());	
+							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+						
+							if((atoi(Warehouse1[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<10)
+							{
+								int NewQuant=atoi(Warehouse1[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								Warehouse1[2][k].quantity=to_string(NewQuant);
+								Store=true;
+							}
+
+							else if(Warehouse1.at(2).size()<20)
+							{
+								AmountLeft=AmountLeft-HowManyToFillLocation1;
+								int HowManySpacesDoINeed=AmountLeft/10;
+								int SpacesLeft= 20 - (Warehouse1.at(2).size());
+								
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									Warehouse1[2][k].quantity = to_string(atoi(Warehouse1[2][k].quantity.c_str())+HowManyToFillLocation1);
+									Store=true;
+									
+								while(AmountLeft>10)
+								{
+									Warehouse A;
+									A.quantity="10";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-10;
+									Warehouse1[2].push_back(A);
+									Store=true;
+								}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse1[2].push_back(A);
+									k=Warehouse1.at(2).size();
+									Store=true;
+									//y++;
+									
+								}
+								else cout<<"Insufficient space for "<<Warehouse1[2][k].ItemID<<"in Warehouse 1.\n";
+						}
+							else cout<<"Insufficient space for "<<Warehouse1[2][k].ItemID<<"in Warehouse 1.\n";
+						}
+					}
+						if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+							{
+							if(k==Warehouse1.at(2).size() && Warehouse1.at(2).size()<20)
+							{
+								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+								int HowManySpacesDoINeed=AmountLeft/10;
+								int SpacesLeft= 20 - (Warehouse1.at(2).size());
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									while(AmountLeft>10)
+									{
+									Warehouse A;
+									A.quantity="10";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-10;
+									Warehouse1[2].push_back(A);
+									Store=true;
+									}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse1[2].push_back(A);
+									k=Warehouse1.at(2).size();
+									Store=true;
+								}
+							}
+							}
+					}
+				}else if(WarehouseID=="2")
+				{
+					if(itemSize=="S")
+					{
+					for(;k<Warehouse2.at(0).size();k++)
+					{
+						if(Warehouse2[0][k].ItemID==ID)
+						{
+							//for multiple location fills
+							int HowManyToFillLocation1=250-atoi(Warehouse2[0][k].quantity.c_str());	
+							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+						
+							if((atoi(Warehouse2[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<250)
+							{
+								int NewQuant=atoi(Warehouse2[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								Warehouse2[0][k].quantity=to_string(NewQuant);
+								Store=true;
+							}
+
+							else if(Warehouse2.at(0).size()<20)
+							{
+								AmountLeft=AmountLeft-HowManyToFillLocation1;
+								int HowManySpacesDoINeed=AmountLeft/250;
+								int SpacesLeft= 20 - (Warehouse2.at(0).size());
+								
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									Warehouse2[0][k].quantity = to_string(atoi(Warehouse2[0][k].quantity.c_str())+HowManyToFillLocation1);
+									
+								while(AmountLeft>250)
+								{
+									Warehouse A;
+									A.quantity="250";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-250;
+									Warehouse2[0].push_back(A);
+									Store=true;
+								}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse2[0].push_back(A);
+									k=Warehouse2.at(0).size();
+									Store=true;
+									//y++;
+									
+								}
+								else cout<<"Insufficient space for "<<Warehouse2[0][k].ItemID<<"in Warehouse 2.\n";
+
+						}
+							else cout<<"Insufficient space for "<<Warehouse2[0][k].ItemID<<"in Warehouse 2.\n";
+
 						}
 
 					}
+						if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+							{
+							if(k==Warehouse2.at(0).size() && Warehouse2.at(0).size()<20)
+							{
+								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+								int HowManySpacesDoINeed=AmountLeft/250;
+								int SpacesLeft= 20 - (Warehouse2.at(0).size());
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									while(AmountLeft>250)
+									{
+									Warehouse A;
+									A.quantity="250";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-250;
+									Warehouse2[0].push_back(A);
+									Store=true;
+									}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse2[0].push_back(A);
+									k=Warehouse2.at(0).size();
+									Store=true;
+
+								}
+							}
+
+							}
+					}else if(itemSize=="M")
+					{
+					for(;k<Warehouse2.at(1).size();k++)
+					{
+
+
+						if(Warehouse2[1][k].ItemID==ID)
+						{
+							//for multiple location fills
+							int HowManyToFillLocation1=100-atoi(Warehouse2[1][k].quantity.c_str());	
+							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+						
+							if((atoi(Warehouse2[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<100)
+							{
+								int NewQuant=atoi(Warehouse2[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								Warehouse2[1][k].quantity=to_string(NewQuant);
+								Store=true;
+							}
+
+							else if(Warehouse2.at(1).size()<60)
+							{
+								AmountLeft=AmountLeft-HowManyToFillLocation1;
+								int HowManySpacesDoINeed=AmountLeft/100;
+								int SpacesLeft= 60 - (Warehouse2.at(1).size());
+								
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									Warehouse2[1][k].quantity = to_string(atoi(Warehouse2[1][k].quantity.c_str())+HowManyToFillLocation1);
+									Store=true;
+								while(AmountLeft>100)
+								{
+									Warehouse A;
+									A.quantity="100";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-100;
+									Warehouse2[1].push_back(A);
+									Store=true;
+								}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse2[1].push_back(A);
+									k=Warehouse2.at(1).size();
+									Store=true;
+									//y++;
+									
+								}
+								else cout<<"Insufficient space for "<<Warehouse2[1][k].ItemID<<"in Warehouse 2.\n";
+
+						}
+							else cout<<"Insufficient space for "<<Warehouse2[1][k].ItemID<<"in Warehouse 2.\n";
+						}
 					}
 
+							if (Store!=true)
+							{
+							if(k==Warehouse2.at(1).size() && Warehouse2.at(1).size()<60)
+							{
+								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+								int HowManySpacesDoINeed=AmountLeft/100;
+								int SpacesLeft= 60 - (Warehouse2.at(1).size());
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									while(AmountLeft>100)
+									{
+									Warehouse A;
+									A.quantity="100";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-100;
+									Warehouse2[1].push_back(A);
+									Store=true;
+									}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse2[1].push_back(A);
+									k=Warehouse2.at(1).size();
+									Store=true;
+
+								}
+							}
+
+							}
+
+					}
+					else if(itemSize=="L")
+					{
+					for(;k<Warehouse2.at(2).size();k++)
+					{
+
+
+						if(Warehouse2[2][k].ItemID==ID)
+						{
+							//for multiple location fills
+							int HowManyToFillLocation1=100-atoi(Warehouse2[2][k].quantity.c_str());	
+							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+						
+							if((atoi(Warehouse2[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<10)
+							{
+								int NewQuant=atoi(Warehouse2[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								Warehouse1[2][k].quantity=to_string(NewQuant);
+								Store=true;
+							}
+
+							else if(Warehouse2.at(2).size()<20)
+							{
+								AmountLeft=AmountLeft-HowManyToFillLocation1;
+								int HowManySpacesDoINeed=AmountLeft/10;
+								int SpacesLeft= 20 - (Warehouse2.at(2).size());
+								
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									Warehouse2[2][k].quantity = to_string(atoi(Warehouse2[2][k].quantity.c_str())+HowManyToFillLocation1);
+									
+								while(AmountLeft>10)
+								{
+									Warehouse A;
+									A.quantity="10";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-10;
+									Warehouse1[2].push_back(A);
+									Store=true;
+								}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse2[2].push_back(A);
+									k=Warehouse2.at(2).size();
+									Store=true;
+									
+								}
+								else cout<<"Insufficient space for "<<Warehouse2[2][k].ItemID<<"in Warehouse 2.\n";
+						}
+							else cout<<"Insufficient space for "<<Warehouse2[2][k].ItemID<<"in Warehouse 2.\n";
+
+						}
+
+					}
+					
+						if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+							{
+							if(k==Warehouse2.at(2).size() && Warehouse2.at(2).size()<20)
+							{
+								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+								int HowManySpacesDoINeed=AmountLeft/10;
+								int SpacesLeft= 20 - (Warehouse2.at(2).size());
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									while(AmountLeft>10)
+									{
+									Warehouse A;
+									A.quantity="10";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-10;
+									Warehouse2[2].push_back(A);
+									Store=true;
+									}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse2[2].push_back(A);
+									k=Warehouse2.at(2).size();
+									Store=true;
+
+								}
+							}
+						}
+					}
+				}if(WarehouseID=="3")
+				{
+					if(itemSize=="S")
+					{
+					for(;k<Warehouse3.at(0).size();k++)
+					{
+						if(Warehouse3[0][k].ItemID==ID)
+						{
+							//for multiple location fills
+							int HowManyToFillLocation1=250-atoi(Warehouse3[0][k].quantity.c_str());	
+							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+						
+							if((atoi(Warehouse3[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<250)
+							{
+								int NewQuant=atoi(Warehouse3[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								Warehouse3[0][k].quantity=to_string(NewQuant);
+								Store=true;
+							}
+
+							else if(Warehouse3.at(0).size()<20)
+							{
+								AmountLeft=AmountLeft-HowManyToFillLocation1;
+								int HowManySpacesDoINeed=AmountLeft/250;
+								int SpacesLeft= 20 - (Warehouse3.at(0).size());
+								
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									Warehouse3[0][k].quantity = to_string(atoi(Warehouse3[0][k].quantity.c_str())+HowManyToFillLocation1);
+									
+								while(AmountLeft>250)
+								{
+									Warehouse A;
+									A.quantity="250";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-250;
+									Warehouse3[0].push_back(A);
+									Store=true;
+								}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse3[0].push_back(A);
+									k=Warehouse3.at(0).size();
+									y++;
+									Store=true;
+									
+								}
+								else cout<<"Insufficient space for "<<Warehouse3[0][k].ItemID<<"in Warehouse 3.\n";
+
+						}
+							else cout<<"Insufficient space for "<<Warehouse3[0][k].ItemID<<"in Warehouse 3.\n";
+
+						}
+					}
+							if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+							{
+							if(k==Warehouse3.at(0).size() && Warehouse3.at(0).size()<20)
+							{
+								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+								int HowManySpacesDoINeed=AmountLeft/250;
+								int SpacesLeft= 20 - (Warehouse3.at(0).size());
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									while(AmountLeft>250)
+									{
+									Warehouse A;
+									A.quantity="250";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-250;
+									Warehouse3[0].push_back(A);
+									Store=true;
+									}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse3[0].push_back(A);
+									k=Warehouse3.at(0).size();
+									Store=true;
+								}
+							}
+							}
+					}else if(itemSize=="M")
+					{
+					for(;k<Warehouse3.at(1).size();k++)
+					{
+
+
+						if(Warehouse3[1][k].ItemID==ID)
+						{
+							//for multiple location fills
+							int HowManyToFillLocation1=100-atoi(Warehouse3[1][k].quantity.c_str());	
+							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+						
+							if((atoi(Warehouse3[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<100)
+							{
+								int NewQuant=atoi(Warehouse3[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								Warehouse3[1][k].quantity=to_string(NewQuant);
+								Store=true;
+							}
+
+							else if(Warehouse3.at(1).size()<60)
+							{
+								AmountLeft=AmountLeft-HowManyToFillLocation1;
+								int HowManySpacesDoINeed=AmountLeft/100;
+								int SpacesLeft= 60 - (Warehouse3.at(3).size());
+								
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									Warehouse3[1][k].quantity = to_string(atoi(Warehouse3[1][k].quantity.c_str())+HowManyToFillLocation1);
+									
+								while(AmountLeft>100)
+								{
+									Warehouse A;
+									A.quantity="100";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-100;
+									Warehouse3[1].push_back(A);
+									Store=true;
+								}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse3[1].push_back(A);
+									k=Warehouse3.at(1).size();
+									Store=true;
+									
+									
+								}
+								else cout<<"Insufficient space for "<<Warehouse3[1][k].ItemID<<"in Warehouse 3.\n";
+
+						}
+							else cout<<"Insufficient space for "<<Warehouse3[1][k].ItemID<<"in Warehouse 3.\n";
+
+
+
+						}
+
+					}
+					if(Store!=true)
+					{
+					if(k==Warehouse3.at(1).size() && Warehouse3.at(1).size()<60)
+							{
+								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+								int HowManySpacesDoINeed=AmountLeft/100;
+								int SpacesLeft= 60 - (Warehouse3.at(1).size());
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									while(AmountLeft>100)
+									{
+									Warehouse A;
+									A.quantity="100";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-100;
+									Warehouse3[1].push_back(A);
+									Store=true;
+									}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse3[1].push_back(A);
+									k=Warehouse3.at(1).size();
+									Store=true;
+
+								}
+							}
+
+					}
+					}
+					else if(itemSize=="L")
+					{
+					for(;k<Warehouse3.at(2).size();k++)
+					{
+
+
+						if(Warehouse3[2][k].ItemID==ID)
+						{
+							//for multiple location fills
+							int HowManyToFillLocation1=100-atoi(Warehouse3[2][k].quantity.c_str());	
+							int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+						
+							if((atoi(Warehouse3[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<10)
+							{
+								int NewQuant=atoi(Warehouse1[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								Warehouse3[2][k].quantity=to_string(NewQuant);
+								Store=true;
+							}
+
+							else if(Warehouse3.at(2).size()<20)
+							{
+								AmountLeft=AmountLeft-HowManyToFillLocation1;
+								int HowManySpacesDoINeed=AmountLeft/10;
+								int SpacesLeft= 20 - (Warehouse3.at(2).size());
+								
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									Warehouse3[2][k].quantity = to_string(atoi(Warehouse3[2][k].quantity.c_str())+HowManyToFillLocation1);
+									
+								while(AmountLeft>10)
+								{
+									Warehouse A;
+									A.quantity="10";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-10;
+									Warehouse3[2].push_back(A);
+									Store=true;
+								}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse3[2].push_back(A);
+									k=Warehouse3.at(2).size();
+									Store=true;
+									
+								}
+								else cout<<"Insufficient space for "<<Warehouse3[2][k].ItemID<<"in Warehouse 3.\n";
+						}
+							else cout<<"Insufficient space for "<<Warehouse3[2][k].ItemID<<"in Warehouse 3.\n";
+
+						}
+
+					}
+					
+						if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+							{
+							if(k==Warehouse3.at(2).size() && Warehouse3.at(2).size()<20)
+							{
+								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
+								int HowManySpacesDoINeed=AmountLeft/10;
+								int SpacesLeft= 20 - (Warehouse3.at(2).size());
+								if(HowManySpacesDoINeed<SpacesLeft)
+								{
+									while(AmountLeft>10)
+									{
+									Warehouse A;
+									A.quantity="10";
+									A.ItemID=ID;
+									AmountLeft=AmountLeft-10;
+									Warehouse3[2].push_back(A);
+									Store=true;
+									}
+									Warehouse A;
+									A.quantity=to_string(AmountLeft);
+									AmountLeft=0;
+									A.ItemID=ID;
+									Warehouse3[2].push_back(A);
+									k=Warehouse3.at(2).size();
+									Store=true;
+
+								}
+							}
+
+							}
+					}			
+			
 				}
 
 			}
 		}
 	}
-
-
-
-}
+	}
 
 
 
