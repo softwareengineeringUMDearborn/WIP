@@ -157,6 +157,9 @@ void logDateDecomp(string line, string &month, string &day, string &year)
 	}
 };
 
+void AddToLogFile(string itemNumber, string warehouse, string quantity, string INorOUT, string date);
+void searchHistoryLog(bool first);
+
 void logSearch(string itemNumber)
 {
 	// check for valid item number
@@ -285,7 +288,8 @@ void logSearch(string itemNumber)
 	if(count == 0)
 	{
 		cout << "Item not found in history log\n";
-
+		searchHistoryLog(true);
+		// search for a new item
 	}
 	else
 	{
@@ -600,7 +604,6 @@ void availableSpaceRemaining(vector<vector<Warehouse>> Warehouse1,vector<vector<
 void availableSpaceRemaining_WarehouseSpaces(vector<vector<Warehouse>> Warehouse, int counter, int Size);
 
 void inventoryValue(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3,string OrdersFileSequenceNumber,string ShipmentsFileSequenceNumber);
-void searchHistoryLog();
 void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1, vector<vector<Warehouse>>& Warehouse2, vector<vector<Warehouse>>& Warehouse3,string& OrdersFileSequenceNumber,string& ShipmentsFileSequenceNumber);
 
 void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3,string& OrdersFileSequenceNumber,string& ShipmentsFileSequenceNumber);
@@ -2355,7 +2358,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 		}
 
 		else if (menuResponse == 3){
-			searchHistoryLog();
+			searchHistoryLog(true);
 		}
 		else if (menuResponse == 4){
 			itemInformationDisplay(Catalog, Warehouse1, Warehouse2, Warehouse3,OrdersFileSequenceNumber,ShipmentsFileSequenceNumber);
@@ -2653,10 +2656,26 @@ void inventoryValue(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Wareho
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
 
-void searchHistoryLog(){//(EXTRA FUNCTIONALITY:ZACH) Search the History log for all transactions of the item ID
+void searchHistoryLog(bool first){//(EXTRA FUNCTIONALITY:ZACH) Search the History log for all transactions of the item ID
 
+	string number = "";
 
-	cout << "TEST: Search History Log functions go here."<<endl<<endl;
+	if (first == true)
+		getline(cin, number);
+		
+	cout << "\n\"EXIT\" to exit search";
+	cout << "\nEnter an item number to view it's history log: ";
+	getline(cin, number);
+
+	while (number.size() != 10 && number != "EXIT")
+	{
+		cout << "\nERROR: invalid item number" << endl;
+		cout << "\nEnter an item number to view it's history log: ";
+		cin >> number;
+	}
+	if (number != "EXIT")
+		logSearch(number);
+
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
 
@@ -3326,7 +3345,7 @@ void showWarehouseContents_ShowCatalogInfo(vector<CatalogItem>Catalog, vector<ve
 
 
 
-void AddToLogFile(string itemNumber, string warehouse, int quantity, string INorOUT, string date)
+void AddToLogFile(string itemNumber, string warehouse, string quantity, string INorOUT, string date)
 {
 	ofstream logFile;
 	logFile.open ("WIPLogFile.txt", std::ofstream::app);
