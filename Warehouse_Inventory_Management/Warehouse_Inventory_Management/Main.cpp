@@ -610,7 +610,7 @@ bool itemInventoryDisplay_testCatalog(vector<CatalogItem>Catalog, string ItemId,
 void showWarehouseContents(vector<CatalogItem>Catalog, vector<vector<Warehouse>> Warehouse1,vector<vector<Warehouse>> Warehouse2,vector<vector<Warehouse>> Warehouse3, string OrdersFileSequenceNumber,string ShipmentsFileSequenceNumber);
 void showWarehouseContents_ShowCatalogInfo(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse, string ItemID, string quantity, int location);
 
-void editItemCatalog();
+void editItemCatalog(vector<CatalogItem>& Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3, bool first);
 void addUser();
 
 bool login(){
@@ -2367,7 +2367,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 			showWarehouseContents(Catalog, Warehouse1,Warehouse2,Warehouse3,OrdersFileSequenceNumber,ShipmentsFileSequenceNumber);
 		}
 		else if (menuResponse == 7){
-			editItemCatalog();
+			editItemCatalog(Catalog, Warehouse1, Warehouse2, Warehouse3, true);
 		}
 		else if (menuResponse == 8){
 			cout << "\nTo add a new user, contact Gold Stars."<<endl;
@@ -3330,7 +3330,7 @@ void AddToLogFile(string itemNumber, string warehouse, int quantity, string INor
 {
 	ofstream logFile;
 	logFile.open ("WIPLogFile.txt", std::ofstream::app);
-	logFile << itemNumber << "	" << warehouse << "	" << quantity << "	" << INorOUT << " " <<	logFile << date << endl;
+	logFile << itemNumber << "	" << warehouse << "	" << quantity << "	" << INorOUT << " " << date << endl;
 	logFile.close();
 };
 
@@ -3387,10 +3387,363 @@ void AddToLogFile(string itemNumber, string warehouse, int quantity, string INor
 //}
 
 
-void editItemCatalog(){//(EXTRA FUNCTIONALITY: GROUP) Able to Add or Delete an item from the catalog. From SPMP, "Edits the valid item catalog, ensuring that the number of accepted items never exceeds 400."
+void editItemCatalog(vector<CatalogItem>& Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3, bool first){	//(EXTRA FUNCTIONALITY: GROUP) Able to Add or Delete an item from the catalog. From SPMP, "Edits the valid item catalog, ensuring that the number of accepted items never exceeds 400."
+
+	CatalogItem Item;
+	string input;
+	string newItemID = "";
+	int itemLocation;
+	int decimalCounter = 0;
+	bool newItem;
+	bool warehouseItem = false;
+	bool choice = false;
+
+	if (first == true)
+		getline(cin, input);
+
+	cout << "\nPlease choose:" << endl;
+	cout << "1. Add an item to the catalog" << endl;
+	cout << "2. Delete an item from the catalog" << endl;
+	cout << "3. Exit" << "\n\n";
+	getline(cin, input);
+
+	if (input == "1" || input == "2" || input == "3")
+	{
+		choice = true;
+	}
+
+	while (choice == false)
+	{
+		input = "";
+		cout << "\nERROR: Incorrect input" << endl;
+		cout << "\nPlease choose:" << endl;
+		cout << "1. Add an item to the catalog" << endl;
+		cout << "2. Delete an item from the catalog" << endl;
+		cout << "3. Exit" << "\n\n";
+		getline(cin, input);
+
+		if (input == "1" || input == "2" || input == "3")
+		{
+			choice = true;
+		}
+	}
+
+	if (input == "1") // add
+	{
+		cout << "Enter the ID of the item that you would like to add: ";
+		getline(cin, newItemID);
+
+		while (newItemID.size() != 10)
+		{
+			newItemID = "";
+			cout << "\nERROR: Invalid Item ID" << endl;
+			cout << "\nEnter the ID of the item that you would like to add: ";
+			getline(cin, newItemID);
+		}
+
+		newItem = false;
+		for (int x = 0; x<Catalog.size(); x++)
+		{
+			if (newItemID == Catalog[x].ID)
+			{ //item valid
+				newItem = true;
+			}
+		}
+
+		if (newItem == false && Catalog.size() < 400)
+		{
+			Item.ID = newItemID; // if the ID is valid (10 characters)
+
+			input = "";
+
+			cout << "Enter the name of the item that you would like to add: ";
+			getline(cin, input);
+			if (input.size() > 20)
+			{
+				Item.itemName = input.substr(0, 20);
+			}
+			else
+				Item.itemName = input;
+
+			input = "";
+			choice = false;
+
+			cout << "Enter the cost of the item that you would like to add: ";
+			getline(cin, input);
+
+			if (input.size() == 8)
+				choice = true;
+
+			for (int i = 0; i < input.size(); i++)
+			{
+				if (choice == true)
+				{
+					if (input.at(i) == '0' || input.at(i) == '1' || input.at(i) == '2' || input.at(i) == '3' || input.at(i) == '4' || input.at(i) == '5' || input.at(i) == '6' || input.at(i) == '7' || input.at(i) == '8' || input.at(i) == '9' || input.at(i) == '.')
+					{
+						if (input.at(i) == '.')
+							decimalCounter++;
+					}
+					else
+						choice = false;
+				}
+			}
+
+			if (decimalCounter != 1)
+				choice = false;
+
+			if (choice == true && input.at(5) != '.')
+				choice = false;
+
+			while (choice == false)
+			{
+				input = "";
+				cout << "\nERROR: Invalid Item Price" << endl;
+				cout << "\nEnter the cost of the item that you would like to add: ";
+				getline(cin, input);
+
+				if (input.size() == 8)
+					choice = true;
+
+				for (int i = 0; i < input.size(); i++)
+				{
+					if (choice == true)
+					{
+						if (input.at(i) == '0' || input.at(i) == '1' || input.at(i) == '2' || input.at(i) == '3' || input.at(i) == '4' || input.at(i) == '5' || input.at(i) == '6' || input.at(i) == '7' || input.at(i) == '8' || input.at(i) == '9' || input.at(i) == '.')
+						{
+							if (input.at(i) == '.')
+								decimalCounter++;
+						}
+						else
+							choice = false;
+					}
+				}
+
+				if (choice == true && decimalCounter != 1)
+					choice = false;
+
+				if (choice == true && input.at(5) != '.')
+					choice = false;
+			}
+
+			Item.itemPrice = input; // if price is valid
+
+			input = "";
+
+			cout << "Enter the size of the item that you would like to add (S, M, L): ";
+			getline(cin, input);
+
+			choice = false;
+
+			if (input == "S" || input == "M" || input == "L")
+			{
+				choice = true;
+			}
+
+			while (choice == false)
+			{
+				input = "";
+				cout << "ERROR: Incorrect Item Size" << endl;
+				cout << "Enter the size of the item that you would like to add (S, M, L): ";
+				getline(cin, input);
+
+				if (input == "S" || input == "M" || input == "L")
+				{
+					choice = true;
+				}
+			}
+
+			Item.itemSize = input;
+
+			input = "";
+
+			cout << "Enter the description of the item that you would like to add:\n-> ";
+			getline(cin, input);
+			if (input.size() > 500)
+			{
+				Item.itemDesc = input.substr(0, 500);
+			}
+			else
+				Item.itemDesc = input; // only first 500 characters from description
+
+			input = "";
+
+			cout << "Please confirm the addition of this item (Y/N): ";
+			getline(cin, input);
+
+			choice = false;
+
+			if (input == "Y" || input == "N")
+			{
+				choice = true;
+			}
+
+			while (choice == false)
+			{
+				input = "";
+				cout << "Please confirm the addition of this item (Y/N): ";
+				getline(cin, input);
+
+				if (input == "Y" || input == "N")
+				{
+					choice = true;
+				}
+			}
+
+			if (input == "Y")
+			{
+				// add the new item to the end of the catalog
+				Catalog.push_back(Item);
+				cout << "Successfully Added!" << endl;
+				cout << "Returning to the main menu" << endl;
+
+				//return to the main menu
+				//void displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+			}
+			else
+			{
+				cout << "Item not added!" << endl;
+				// go back to the beginning
+				editItemCatalog(Catalog, Warehouse1, Warehouse2, Warehouse3, false);
+			}
 
 
-	cout << "TEST: Adding/Deleting Catalog items functions go here."<<endl<<endl;
+			//cout << "Returning to the main menu" << endl;
+			//void displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+		}
+
+		else if (Catalog.size() == 400)
+		{
+			cout << "\nERROR: Cannot Add Item" << endl;
+			cout << "The Catalog Is Full" << endl;
+			cout << "Returning to the main menu" << endl;
+
+			// display main menu
+			//void displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+		}
+
+		else // item exists in catalog
+		{
+			cout << "\nERROR: Cannot Add Item" << endl;
+			cout << "Item Already Exists In The Catalog" << endl;
+			// go back to the beginning
+			editItemCatalog(Catalog, Warehouse1, Warehouse2, Warehouse3, false);
+		}
+	}
+
+	else if (input == "2") // delete
+	{
+
+		cout << "Insert the Item ID you would like to delete: ";
+		getline(cin, newItemID);
+
+		bool newItem = false;
+		for (int x = 0; x<Catalog.size(); x++)
+		{
+			if (newItemID == Catalog[x].ID)
+			{ //item valid
+				itemLocation = x;
+				newItem = true;
+			}
+		}
+
+		if (newItem == true)
+		{
+
+			for (int i = 0; i<3; i++) // check warehouse 1
+			{
+				for (int j = 0; j < Warehouse1.at(i).size(); j++)
+				{
+					if (Warehouse1[i][j].ItemID == newItemID)
+					{
+						warehouseItem = true;
+					}
+				}
+			}
+
+			if (warehouseItem == false) // check warehouse 2 if not already found
+			{
+				for (int i = 0; i<3; i++)
+				{
+					for (int j = 0; j < Warehouse2.at(i).size(); j++)
+					{
+						if (Warehouse2[i][j].ItemID == newItemID)
+						{
+							warehouseItem = true;
+						}
+					}
+				}
+			}
+
+			if (warehouseItem == false) // check warehouse 3 if not already found
+			{
+				for (int i = 0; i<3; i++)
+				{
+					for (int j = 0; j < Warehouse3.at(i).size(); j++)
+					{
+						if (Warehouse3[i][j].ItemID == newItemID)
+						{
+							warehouseItem = true;
+						}
+					}
+				}
+			}
+
+			if (warehouseItem == true) // one of the 3 warehouses contains the item
+			{
+				cout << "\nERROR: Cannot Delete Item" << endl;
+				cout << "Item Exists In One or More Warehouses" << endl;
+
+				// go back to the beginning
+				editItemCatalog(Catalog, Warehouse1, Warehouse2, Warehouse3, false);
+
+			}
+
+			else // no warehouse contains item
+			{
+				cout << "Are you sure you would like to delete item " << newItemID << "? (Y/N): ";
+				getline(cin, input);
+
+				choice = false;
+
+				if (input == "Y" || input == "N")
+					choice = true;
+
+				while (choice == false)
+				{
+					input = "";
+					cout << "Are you sure you would like to delete item " << newItemID << "? (Y/N): ";
+					getline(cin, input);
+
+					if (input == "Y" || input == "N")
+					{
+						choice = true;
+					}
+
+				}
+
+				Catalog.erase(Catalog.begin() + itemLocation);
+				cout << "Successfully Deleted!" << endl;
+				cout << "Returning to the main menu" << endl;
+				//void displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+			}
+		}
+
+		else
+		{
+			cout << "Item does not exist in the catalog\n";
+
+			// go back to the beginning
+			editItemCatalog(Catalog, Warehouse1, Warehouse2, Warehouse3, false);
+		}
+	}
+
+	else // input == '3') exit
+	{
+		cout << "\nReturning to the main menu" << endl;
+		// display main menu
+		//void displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+	}
+
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
 
