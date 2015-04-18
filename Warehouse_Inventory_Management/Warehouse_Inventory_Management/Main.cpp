@@ -1,20 +1,12 @@
-
-/*
-Warehouse Inventory Management System
-
-Cody Carlson 3/11/15 5:30pm - Created the basic main menu structure.
-
-
-*/
-
-//Includes go here:
-#include <iostream>
-#include <string>
-#include <vector>
-#include <array>
+#include<iostream>
+#include<string>
+#include<vector>
+#include<array>
 #include<istream>
 #include<fstream>
 #include<sstream>
+#include<ctime>
+
 
 
 using namespace std;
@@ -249,7 +241,7 @@ void logSearch(string itemNumber)
 							i++;
 					}
 
-					if( equal == false ) //month > foundItems.at(i-1).getMonth() )	// item month newer than line month, insert
+					if( equal == false )	// item month newer than line month, insert
 					{
 						if(i == foundItems.size())
 						{	
@@ -260,7 +252,7 @@ void logSearch(string itemNumber)
 							foundItems.insert(foundItems.begin()+i, newItem);
 						}
 					}
-					else if( equal == true ) // month == foundItems.at(i-1).getMonth() )	// month is the same as list item month, check day
+					else if( equal == true ) 	// month is the same as list item month, check day
 					{
 						equal = false;
 						one = false;
@@ -312,11 +304,24 @@ vector<Shipments> loadShipments(string&VendorFileSequenceID)
 	string SequenceID;
 	cat.open("Vendor.txt");
 	vector<char> data(sLine.begin(), sLine.end());
-	
+	string Exit;
 	int numberofDash=0;
-	//getting the header
 
-	cout<<"here";
+
+	
+	if(cat.fail())         
+       { 
+		  cout<<"System Error: Unable to load Vendor Shipments File.\n";
+		  cout<<"Enter 'Exit' to exit from the program.\n";
+		  cin>>Exit;
+		    while(Exit!="Exit"){
+				   cin>>Exit;
+			}
+			if(Exit=="Exit")exit(0);
+	}
+
+
+	//getting the header
 
 	getline(cat,sLine);
 
@@ -331,9 +336,6 @@ vector<Shipments> loadShipments(string&VendorFileSequenceID)
 	{
 		cout<<"Vendor File sequence number incorrect."<<endl;
 	}
-
-
-    cout << sLine.substr(0, 1) << endl;
 
 	
 	getline(cat,sLine);
@@ -381,7 +383,6 @@ vector<Shipments> loadShipments(string&VendorFileSequenceID)
 		}
 
 
-		system("pause");
 		StoredDailyShipments.push_back(A);
 		A.ItemsShippedVector.clear();
 		getline(cat,sLine);
@@ -401,10 +402,20 @@ vector<Shipments> loadShipments(string&VendorFileSequenceID)
 	}
 
 	//check total number of items in trailer matches what was received
-	if(sLine.substr(1,1)== to_string(StoredDailyShipments.size()))
+	vector<string> TEST;
+	stringstream stream(sLine);
+    while( getline(stream, sLine, '-') )
 	{
-		cout<<"All "<<StoredDailyShipments.size()<<" vendors were processed.";
-	}else cout<<"There was an error with the Catalog File. The Trailer number does not match the number of customers in the file.\n";
+		TEST.push_back(sLine);
+	}
+	if(TEST[0].substr(1)== to_string(StoredDailyShipments.size()))
+	{
+		cout<<"All "<<StoredDailyShipments.size()<<" vendors were processed.\n";
+	}else cout<<"There was an error with the Vendor File. The Trailer number does not match the number of Vendors in the file.\n";
+	if(TEST[1]== to_string(StoredDailyShipments.size()))
+	{
+		cout<<"All "<<StoredDailyShipments.size()<<" items shipped were processed.\n";
+	}else cout<<"There was an error with the Vendor File. The Trailer number does not match the number of items shipped in the file.\n";
 
 	return StoredDailyShipments;
 }
@@ -417,16 +428,27 @@ vector<Orders> loadOrders(string&CustomerSequenceID){
 	ifstream cat;
 	string sLine;
 	string SequenceID;
+	string Exit;
 	vector<char> data(sLine.begin(), sLine.end());
 	
 	int numberofDash=0;
 	cat.open("Customer.txt");
+	if(cat.fail())         
+       { 
+		  cout<<"System Error: Unable to load Customer Orders File.\n";
+		  cout<<"Enter 'Exit' to exit from the program.\n";
+		  cin>>Exit;
+		    while(Exit!="Exit"){
+				   cin>>Exit;
+			}
+			if(Exit=="Exit")exit(0);
+	}
+
+
 	//getting the header
 
 	getline(cat,sLine);
 	
-    cout << sLine.substr(0, 1) << endl;
-
 
 	for(int x=0;sLine.substr(x,1)!="-";x++)
 	{
@@ -463,14 +485,13 @@ vector<Orders> loadOrders(string&CustomerSequenceID){
 		A.Cusomer_OR_EntityName = sLine.substr(1,60);
 		
 		//get address
-		//getline(cat,sLine);
 		A.CustomerStreetAddress = sLine.substr(61,30);
 		A.CustomerCity = sLine.substr(92,20);
 		//include comma in the space
 		A.CustomerState_OR_Province = sLine.substr(112,20);//.substr(45);
 		A.CustomerPostalCode = sLine.substr(132,10);
 		A.CustomerCountry = sLine.substr(142,40);
-		//getline(cat,sLine);
+
 		A.OrderDate = sLine.substr(182,10);
 		A.OrderItemCount = sLine.substr(192,1);
 		
@@ -479,7 +500,7 @@ vector<Orders> loadOrders(string&CustomerSequenceID){
 
 			
 		data.clear();
-			//(sLine.begin(), sLine.end());
+			
 			for(int i=0;i<sLine.length();i++)
 			{
 				data.push_back(sLine[i]);
@@ -523,13 +544,11 @@ vector<Orders> loadOrders(string&CustomerSequenceID){
 
 		}
 
-
-		system("pause");
 		StoredDailyOrders.push_back(A);
 		getline(cat,sLine);
 		
 		data.clear();
-			//(sLine.begin(), sLine.end());
+
 			for(int i=0;i<sLine.length();i++)
 			{
 				data.push_back(sLine[i]);
@@ -544,10 +563,20 @@ vector<Orders> loadOrders(string&CustomerSequenceID){
 	}
 
 	//check total number of items in trailer matches what was received
-	if(sLine.substr(1,1)== to_string(StoredDailyOrders.size()))
+	vector<string> TEST;
+	stringstream stream(sLine);
+    while( getline(stream, sLine, '-') )
 	{
-		cout<<"All "<<StoredDailyOrders.size()<<" customers were processed.";
-	}else cout<<"There was an error with the Catalog File. The Trailer number does not match the number of customers in the file.\n";
+		TEST.push_back(sLine);
+	}
+	if(TEST[0].substr(1)== to_string(StoredDailyOrders.size()))
+	{
+		cout<<"All "<<StoredDailyOrders.size()<<" vendors were processed.\n";
+	}else cout<<"There was an error with the Customer File. The Trailer number does not match the number of Customers in the file.\n";
+	if(TEST[1]== to_string(StoredDailyOrders.size()))
+	{
+		cout<<"All "<<StoredDailyOrders.size()<<" items shipped were processed.\n";
+	}else cout<<"There was an error with the Customer File. The Trailer number does not match the number of items ordered in the file.\n";
 
 	return StoredDailyOrders;
 }
@@ -558,7 +587,19 @@ vector<CatalogItem> loadCatalog(){
 	CatalogItem A;
 	ifstream cat;
 	string sLine;
+	string Exit;
+
 	cat.open("Catalog.txt");
+	if(cat.fail())         
+       { 
+		  cout<<"System Error: Unable to load Catalog.\n";
+		  cout<<"Enter 'Exit' to exit from the program.\n";
+		  cin>>Exit;
+		    while(Exit!="Exit"){
+				   cin>>Exit;
+			}
+			if(Exit=="Exit")exit(0);
+	}
 	getline(cat,sLine);
 
 	getline(cat,sLine);
@@ -583,7 +624,7 @@ vector<CatalogItem> loadCatalog(){
 	//check total number of items in trailer matches what was received
 	if(sLine.substr(1)== to_string(Catalog.size()))
 	{
-		cout<<"All "<<Catalog.size()<<" items were processed.";
+		cout<<"All "<<Catalog.size()<<" items were processed and saved within the Catalog.\n";
 	}else cout<<"There was an error with the Catalog File. The Trailer number does not match the number of items in the file.\n";
 
 	return Catalog;
@@ -599,7 +640,7 @@ struct Warehouse{
 
 void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3,string& OrdersFileSequenceNumber,string& ShipmentsFileSequenceNumber);
 
-void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3,string&  OrdersFileSequenceNumber, string& ShipmentsFileSequenceNumber);
+void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3,string&  OrdersFileSequenceNumber, string& ShipmentsFileSequenceNumber, vector<CatalogItem>Catalog);
 void availableSpaceRemaining(vector<vector<Warehouse>> Warehouse1,vector<vector<Warehouse>> Warehouse2,vector<vector<Warehouse>> Warehouse3);
 void availableSpaceRemaining_WarehouseSpaces(vector<vector<Warehouse>> Warehouse, int counter, int Size);
 
@@ -659,7 +700,20 @@ void SetUpWarehouses(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehou
 	Warehouse A;
 	ifstream cat;
 	string sLine;
+	string Exit;
+
 	cat.open("WarehouseStatus.txt");
+	if(cat.fail())         
+       { 
+		  cout<<"System Error: Unable to load Warehouse Status.\n";
+		  cout<<"Enter 'Exit' to exit from the program.\n";
+		  cin>>Exit;
+		    while(Exit!="Exit"){
+				   cin>>Exit;
+			}
+			if(Exit=="Exit")exit(0);
+	}
+
 	getline(cat,sLine);
 	OrdersFileSequenceNumber= sLine.substr(27);
 
@@ -797,7 +851,6 @@ void CreateInvoice(vector<Orders> &StoredDailyOrders, vector<CatalogItem> Catalo
 
 		for(int x=0; x<StoredDailyOrders.size();x++)
 	{
-		cout<<endl;
 		float subtotal=0;
 		outputFile<<StoredDailyOrders[x].CustomerID<<endl;
 		outputFile<<StoredDailyOrders[x].Cusomer_OR_EntityName<<endl;
@@ -841,13 +894,13 @@ void CreateInvoice(vector<Orders> &StoredDailyOrders, vector<CatalogItem> Catalo
 		outputFile<<"\t\t\t\t\t\t\t\t\t ============"<<endl;
 		outputFile<<"Discount Percentage-"<<StoredDailyOrders[x].CustomerDiscount<<"%"<<"\t\t\t\t\t- $ "<<Discount<<endl;
 		outputFile<<"\t\t\t\t\t\t\t\t\t ============"<<endl;
-		outputFile<<"Order total\t\t\t\t\t\t\t\t\t\t"<<OrderTotal<<endl;
+		outputFile<<"Order total\t\t\t\t\t\t\t"<<"  $"<<OrderTotal<<endl;
 		outputFile<<"Tax    6%\t\t\t\t\t\t\t\t"<<"+ $"<<Tax<<endl;
 		outputFile<<"\t\t\t\t\t\t\t\t\t ============"<<endl;
 		outputFile<<"AMOUNT DUE in "<<StoredDailyOrders[x].CustomerPaymentType<<"\t\t\t\t\t"<<"$ "<<AmountDue<<endl;
 		
 		
-		outputFile<<endl<<"END";
+		outputFile<<endl;
 	}
 
 
@@ -875,7 +928,7 @@ void CreatePackingSlip(vector<Orders> &StoredDailyOrders, vector<CatalogItem> Ca
 		{
 			int itemCount=0;
 			int pickedCount=0;
-			//cout<<endl<<endl<<endl;
+
 			outputFile<<"Customer ID:\t"<<StoredDailyOrders[x].CustomerID<<endl;
 			outputFile<<"Customer Name and Address:"<<endl;
 			outputFile<<StoredDailyOrders[x].CustomerID<<endl;
@@ -973,7 +1026,7 @@ void CreatePackingSlip(vector<Orders> &StoredDailyOrders, vector<CatalogItem> Ca
 		{
 			int itemCount=0;
 			int pickedCount=0;
-			//outputFile<<endl<<endl<<endl;
+		
 			outputFile<<"Customer ID:\t"<<StoredDailyOrders[x].CustomerID<<endl;
 			outputFile<<"Customer Name and Address:"<<endl;
 			outputFile<<StoredDailyOrders[x].CustomerID<<endl;
@@ -1056,12 +1109,15 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 						{ 
 							A.Count=Warehouse1[0][k].quantity;
 							A.LocationFound="S-0"+to_string(k);
-							cout<<"in here";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							AmountAvailable=AmountAvailable+ atoi( Warehouse1[0][k].quantity.c_str());
+
 							if(AmountOrdered<AmountAvailable)
 							{
 								Warehouse1[0][k].quantity=to_string(atoi(Warehouse1[0][k].quantity.c_str())-AmountOrdered);
+								
+								AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",to_string(AmountOrdered), "OUT", StoredDailyOrders[x].OrderDate);
+								
 								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
 								{
 								for(int i=0;i<=k;i++)
@@ -1083,8 +1139,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
 							A.LocationFound="BACKORDERED";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
-							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
-							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 					}
 						
 					}
@@ -1107,6 +1163,7 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							AmountAvailable=AmountAvailable+ atoi( Warehouse1[1][k].quantity.c_str());
 							if(AmountOrdered<AmountAvailable)
 							{
+								AddToLogFile(Warehouse1[1][k].ItemID, "Warehouse 1",to_string(AmountOrdered), "OUT", StoredDailyOrders[x].OrderDate);
 								Warehouse1[0][k].quantity=to_string(atoi(Warehouse1[0][k].quantity.c_str())-AmountOrdered);
 								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
 								{
@@ -1129,8 +1186,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
 							A.LocationFound="BACKORDERED";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
-							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
-							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 					}
 						//delete empty spaces
 					for(int l=0;l<Warehouse1.at(1).size();l++)
@@ -1144,11 +1201,12 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 						if(Warehouse1[2][k].ItemID==ID)
 						{ 
 							A.LocationFound="S-2"+to_string(k);
-							cout<<"in here";
+							
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							AmountAvailable=AmountAvailable+ atoi( Warehouse1[2][k].quantity.c_str());
 							if(AmountOrdered<AmountAvailable)
 							{
+								AddToLogFile(Warehouse1[2][k].ItemID, "Warehouse 1",to_string(AmountOrdered), "OUT", StoredDailyOrders[x].OrderDate);
 								Warehouse1[0][k].quantity=to_string(atoi(Warehouse1[0][k].quantity.c_str())-AmountOrdered);
 								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
 								{
@@ -1171,8 +1229,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
 							A.LocationFound="BACKORDERED";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
-							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
-							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 					}
 					//delete empty spaces
 					for(int l=0;l<Warehouse1.at(2).size();l++)
@@ -1194,6 +1252,7 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							AmountAvailable=AmountAvailable+ atoi( Warehouse2[0][k].quantity.c_str());
 							if(AmountOrdered<AmountAvailable)
 							{
+								AddToLogFile(Warehouse2[0][k].ItemID, "Warehouse 2",to_string(AmountOrdered), "OUT", StoredDailyOrders[x].OrderDate);
 								Warehouse2[0][k].quantity=to_string(atoi(Warehouse2[0][k].quantity.c_str())-AmountOrdered);
 								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
 								{
@@ -1216,8 +1275,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
 							A.LocationFound="BACKORDERED";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
-							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
-							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 					}
 						
 					}
@@ -1240,6 +1299,7 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							AmountAvailable=AmountAvailable+ atoi( Warehouse2[1][k].quantity.c_str());
 							if(AmountOrdered<AmountAvailable)
 							{
+								AddToLogFile(Warehouse2[1][k].ItemID, "Warehouse 2",to_string(AmountOrdered), "OUT", StoredDailyOrders[x].OrderDate);
 								Warehouse2[0][k].quantity=to_string(atoi(Warehouse2[0][k].quantity.c_str())-AmountOrdered);
 								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
 								{
@@ -1262,8 +1322,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
 							A.LocationFound="BACKORDERED";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
-							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
-							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 					}
 						//delete empty spaces
 					for(int l=0;l<Warehouse2.at(1).size();l++)
@@ -1281,6 +1341,7 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							AmountAvailable=AmountAvailable+ atoi( Warehouse2[2][k].quantity.c_str());
 							if(AmountOrdered<AmountAvailable)
 							{
+								AddToLogFile(Warehouse2[2][k].ItemID, "Warehouse 2",to_string(AmountOrdered), "OUT", StoredDailyOrders[x].OrderDate);
 								Warehouse2[0][k].quantity=to_string(atoi(Warehouse2[0][k].quantity.c_str())-AmountOrdered);
 								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
 								{
@@ -1303,8 +1364,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
 							A.LocationFound="BACKORDERED";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
-							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
-							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 					}
 					//delete empty spaces
 					for(int l=0;l<Warehouse2.at(2).size();l++)
@@ -1322,11 +1383,11 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 						if(Warehouse3[0][k].ItemID==ID)
 						{ 
 							A.LocationFound="S-0"+to_string(k);
-							cout<<"in here";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							AmountAvailable=AmountAvailable+ atoi( Warehouse3[0][k].quantity.c_str());
 							if(AmountOrdered<AmountAvailable)
 							{
+								AddToLogFile(Warehouse3[0][k].ItemID, "Warehouse 3",to_string(AmountOrdered), "OUT", StoredDailyOrders[x].OrderDate);
 								Warehouse3[0][k].quantity=to_string(atoi(Warehouse3[0][k].quantity.c_str())-AmountOrdered);
 								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
 								{
@@ -1349,8 +1410,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
 							A.LocationFound="BACKORDERED";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
-							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
-							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 					}
 						
 					}
@@ -1373,6 +1434,7 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							AmountAvailable=AmountAvailable+ atoi( Warehouse3[1][k].quantity.c_str());
 							if(AmountOrdered<AmountAvailable)
 							{
+								AddToLogFile(Warehouse3[1][k].ItemID, "Warehouse 3",to_string(AmountOrdered), "OUT", StoredDailyOrders[x].OrderDate);
 								Warehouse3[0][k].quantity=to_string(atoi(Warehouse3[0][k].quantity.c_str())-AmountOrdered);
 								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
 								{
@@ -1395,8 +1457,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
 							A.LocationFound="BACKORDERED";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
-							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
-							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 					}
 						//delete empty spaces
 					for(int l=0;l<Warehouse3.at(1).size();l++)
@@ -1410,11 +1472,11 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 						if(Warehouse3[2][k].ItemID==ID)
 						{ 
 							A.LocationFound="S-2"+to_string(k);
-							cout<<"in here";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							AmountAvailable=AmountAvailable+ atoi( Warehouse3[2][k].quantity.c_str());
 							if(AmountOrdered<AmountAvailable)
 							{
+								AddToLogFile(Warehouse3[2][k].ItemID, "Warehouse 3",to_string(AmountOrdered), "OUT", StoredDailyOrders[x].OrderDate);
 								Warehouse3[0][k].quantity=to_string(atoi(Warehouse3[0][k].quantity.c_str())-AmountOrdered);
 								if(StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.size()>1)
 								{
@@ -1437,8 +1499,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.clear();
 							A.LocationFound="BACKORDERED";
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
-							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
-							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.";
+							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 					}
 					//delete empty spaces
 					for(int l=0;l<Warehouse3.at(2).size();l++)
@@ -1450,7 +1512,6 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 
 		}
 
-	//	CreatePackingSlip(StoredDailyOrders, Catalog);
 	}
 
 		CreateInvoice(StoredDailyOrders, Catalog);
@@ -1496,18 +1557,19 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 								int NewQuant=atoi(Warehouse1[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse1[0][k].quantity=to_string(NewQuant);
 								Store=true;
+								AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 							}
 
 							else if(Warehouse1.at(0).size()<20)
 							{
 								AmountLeft=AmountLeft-HowManyToFillLocation1;
-								int HowManySpacesDoINeed=AmountLeft/250;
+								int HowManySpacesDoINeed=(AmountLeft/250)+1;
 								int SpacesLeft= 20 - (Warehouse1.at(0).size());
 								
 								if(HowManySpacesDoINeed<SpacesLeft)
 								{
 									Warehouse1[0][k].quantity = to_string(atoi(Warehouse1[0][k].quantity.c_str())+HowManyToFillLocation1);
-									
+									AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								while(AmountLeft>250)
 								{
 									Warehouse A;
@@ -1524,21 +1586,24 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse1[0].push_back(A);
 									k=Warehouse1.at(0).size();
 									Store=true;
-									//y++;
+
+									//AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 									
 								}
-								else cout<<"Insufficient space for "<<Warehouse1[0][k].ItemID<<"in Warehouse 1.\n";
+								else cout<<"Insufficient space for "<<Warehouse1[0][k].ItemID<<"in Warehouse 1.\n";//fix this
 
 						}
-							else cout<<"Insufficient space for "<<Warehouse1[0][k].ItemID<<"in Warehouse 1.\n";
+							else cout<<"Insufficient space for "<<Warehouse1[0][k].ItemID<<"in Warehouse 1.\n";//fix this
 
 
 
-						} }
-					if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+						} 
+					}
+					if (Store!=true)
 							{
 							if(k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
 							{
+								AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
 								int HowManySpacesDoINeed=AmountLeft/250;
 								int SpacesLeft= 20 - (Warehouse1.at(0).size());
@@ -1560,6 +1625,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse1[0].push_back(A);
 									k=Warehouse1.at(0).size();
 									Store=true;
+									AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 								}
 							}
 							}
@@ -1578,6 +1645,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 								int NewQuant=atoi(Warehouse1[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse1[1][k].quantity=to_string(NewQuant);
 								Store= true;
+								AddToLogFile(Warehouse1[1][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 							}
 
 							else if(Warehouse1.at(1).size()<60)
@@ -1606,7 +1674,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse1[1].push_back(A);
 									k=Warehouse1.at(1).size();
 									Store=true;
-									//y++;
+									AddToLogFile(Warehouse1[1][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 									
 								}
 								else cout<<"Insufficient space for "<<Warehouse1[1][k].ItemID<<"in Warehouse 1.\n";
@@ -1640,6 +1708,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse1[1].push_back(A);
 									k=Warehouse1.at(1).size();
 									Store=true;
+									AddToLogFile(Warehouse1[1][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								}
 							}
 							}
@@ -1659,6 +1728,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 								int NewQuant=atoi(Warehouse1[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse1[2][k].quantity=to_string(NewQuant);
 								Store=true;
+								AddToLogFile(Warehouse1[2][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 							}
 
 							else if(Warehouse1.at(2).size()<20)
@@ -1696,7 +1767,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 							else cout<<"Insufficient space for "<<Warehouse1[2][k].ItemID<<"in Warehouse 1.\n";
 						}
 					}
-						if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+						if (Store!=true)
 							{
 							if(k==Warehouse1.at(2).size() && Warehouse1.at(2).size()<20)
 							{
@@ -1721,6 +1792,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse1[2].push_back(A);
 									k=Warehouse1.at(2).size();
 									Store=true;
+									AddToLogFile(Warehouse1[2][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 								}
 							}
 							}
@@ -1742,6 +1815,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 								int NewQuant=atoi(Warehouse2[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse2[0][k].quantity=to_string(NewQuant);
 								Store=true;
+								AddToLogFile(Warehouse2[0][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 							}
 
 							else if(Warehouse2.at(0).size()<20)
@@ -1770,7 +1845,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[0].push_back(A);
 									k=Warehouse2.at(0).size();
 									Store=true;
-									//y++;
+									AddToLogFile(Warehouse2[0][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 									
 								}
 								else cout<<"Insufficient space for "<<Warehouse2[0][k].ItemID<<"in Warehouse 2.\n";
@@ -1781,7 +1857,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 						}
 
 					}
-						if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+						if (Store!=true)
 							{
 							if(k==Warehouse2.at(0).size() && Warehouse2.at(0).size()<20)
 							{
@@ -1806,6 +1882,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[0].push_back(A);
 									k=Warehouse2.at(0).size();
 									Store=true;
+									AddToLogFile(Warehouse2[0][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 
 								}
 							}
@@ -1828,6 +1906,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 								int NewQuant=atoi(Warehouse2[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse2[1][k].quantity=to_string(NewQuant);
 								Store=true;
+								AddToLogFile(Warehouse2[1][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 							}
 
 							else if(Warehouse2.at(1).size()<60)
@@ -1856,7 +1936,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[1].push_back(A);
 									k=Warehouse2.at(1).size();
 									Store=true;
-									//y++;
+									AddToLogFile(Warehouse2[1][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 									
 								}
 								else cout<<"Insufficient space for "<<Warehouse2[1][k].ItemID<<"in Warehouse 2.\n";
@@ -1891,7 +1972,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[1].push_back(A);
 									k=Warehouse2.at(1).size();
 									Store=true;
-
+									AddToLogFile(Warehouse2[1][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 								}
 							}
 
@@ -1903,7 +1985,6 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 					for(;k<Warehouse2.at(2).size();k++)
 					{
 
-
 						if(Warehouse2[2][k].ItemID==ID)
 						{
 							//for multiple location fills
@@ -1913,8 +1994,10 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 							if((atoi(Warehouse2[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<10)
 							{
 								int NewQuant=atoi(Warehouse2[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
-								Warehouse1[2][k].quantity=to_string(NewQuant);
+								Warehouse2[2][k].quantity=to_string(NewQuant);
 								Store=true;
+								AddToLogFile(Warehouse2[2][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 							}
 
 							else if(Warehouse2.at(2).size()<20)
@@ -1933,7 +2016,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									A.quantity="10";
 									A.ItemID=ID;
 									AmountLeft=AmountLeft-10;
-									Warehouse1[2].push_back(A);
+									Warehouse2[2].push_back(A);
 									Store=true;
 								}
 									Warehouse A;
@@ -1943,6 +2026,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[2].push_back(A);
 									k=Warehouse2.at(2).size();
 									Store=true;
+									AddToLogFile(Warehouse2[2][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 									
 								}
 								else cout<<"Insufficient space for "<<Warehouse2[2][k].ItemID<<"in Warehouse 2.\n";
@@ -1953,7 +2038,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 
 					}
 					
-						if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+						if (Store!=true)
 							{
 							if(k==Warehouse2.at(2).size() && Warehouse2.at(2).size()<20)
 							{
@@ -1978,7 +2063,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[2].push_back(A);
 									k=Warehouse2.at(2).size();
 									Store=true;
-
+									AddToLogFile(Warehouse2[2][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 								}
 							}
 						}
@@ -2000,6 +2086,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 								int NewQuant=atoi(Warehouse3[0][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse3[0][k].quantity=to_string(NewQuant);
 								Store=true;
+								AddToLogFile(Warehouse3[0][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 							}
 
 							else if(Warehouse3.at(0).size()<20)
@@ -2027,9 +2115,10 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									A.ItemID=ID;
 									Warehouse3[0].push_back(A);
 									k=Warehouse3.at(0).size();
-									y++;
 									Store=true;
-									
+									//y++;
+									AddToLogFile(Warehouse3[0][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 								}
 								else cout<<"Insufficient space for "<<Warehouse3[0][k].ItemID<<"in Warehouse 3.\n";
 
@@ -2038,7 +2127,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 
 						}
 					}
-							if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+							if (Store!=true)
 							{
 							if(k==Warehouse3.at(0).size() && Warehouse3.at(0).size()<20)
 							{
@@ -2063,10 +2152,13 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse3[0].push_back(A);
 									k=Warehouse3.at(0).size();
 									Store=true;
+									AddToLogFile(Warehouse3[0][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 								}
 							}
 							}
-					}else if(itemSize=="M")
+					}
+					else if(itemSize=="M")
 					{
 					for(;k<Warehouse3.at(1).size();k++)
 					{
@@ -2083,6 +2175,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 								int NewQuant=atoi(Warehouse3[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse3[1][k].quantity=to_string(NewQuant);
 								Store=true;
+								AddToLogFile(Warehouse3[1][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 							}
 
 							else if(Warehouse3.at(1).size()<60)
@@ -2111,15 +2205,14 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse3[1].push_back(A);
 									k=Warehouse3.at(1).size();
 									Store=true;
-									
+									AddToLogFile(Warehouse3[1][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 									
 								}
 								else cout<<"Insufficient space for "<<Warehouse3[1][k].ItemID<<"in Warehouse 3.\n";
 
 						}
 							else cout<<"Insufficient space for "<<Warehouse3[1][k].ItemID<<"in Warehouse 3.\n";
-
-
 
 						}
 
@@ -2149,7 +2242,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse3[1].push_back(A);
 									k=Warehouse3.at(1).size();
 									Store=true;
-
+									AddToLogFile(Warehouse3[1][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 								}
 							}
 
@@ -2169,9 +2263,11 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 						
 							if((atoi(Warehouse3[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str()))<10)
 							{
-								int NewQuant=atoi(Warehouse1[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
+								int NewQuant=atoi(Warehouse3[2][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse3[2][k].quantity=to_string(NewQuant);
 								Store=true;
+								AddToLogFile(Warehouse3[2][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 							}
 
 							else if(Warehouse3.at(2).size()<20)
@@ -2200,7 +2296,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse3[2].push_back(A);
 									k=Warehouse3.at(2).size();
 									Store=true;
-									
+									AddToLogFile(Warehouse3[2][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 								}
 								else cout<<"Insufficient space for "<<Warehouse3[2][k].ItemID<<"in Warehouse 3.\n";
 						}
@@ -2210,7 +2307,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 
 					}
 					
-						if (Store!=true)//k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
+						if (Store!=true)
 							{
 							if(k==Warehouse3.at(2).size() && Warehouse3.at(2).size()<20)
 							{
@@ -2235,7 +2332,8 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse3[2].push_back(A);
 									k=Warehouse3.at(2).size();
 									Store=true;
-
+									AddToLogFile(Warehouse3[2][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								
 								}
 							}
 
@@ -2268,27 +2366,11 @@ int main () {
 	
 	vector<Shipments> StoredDailyShipments = loadShipments(ShipmentsFileSequenceNumber);
 
-	//SetUpWarehouses(Warehouse1, Warehouse2, Warehouse3, OrdersFileSequenceNumber, ShipmentsFileSequenceNumber);
-	cout<<"here";
 
 	ProcessOrders(Catalog, StoredDailyOrders, Warehouse1, Warehouse2, Warehouse3);
+
 	ProcessShipments(Catalog, StoredDailyShipments, Warehouse1, Warehouse2, Warehouse3);
 	
-	
-	
-	cout<<Warehouse1[0][0].ItemID<<"    here    +++"<<Warehouse1[0][0].quantity;
-	cout<<"Back in Main\n";
-	cout<<Warehouse1.at(0).size();
-	cout<<Warehouse1.at(1).size();
-	cout<<Warehouse1.at(2).size();
-	cout<<endl;
-	cout<<Warehouse2.at(0).size();
-	cout<<Warehouse2.at(1).size();
-	cout<<Warehouse2.at(2).size();
-	cout<<endl;
-	cout<<Warehouse3.at(0).size();
-	cout<<Warehouse3.at(1).size();
-	cout<<Warehouse3.at(2).size();
 
 	//cody needs to add blank spaces
 	Warehouse1[0].resize(20);
@@ -2303,9 +2385,6 @@ int main () {
 	Warehouse3[1].resize(60);
 	Warehouse3[2].resize(20);
 
-
-
-	cout<<"here"<<endl;
 
 	//Initialize Catalog
 	//Initialize Warehouse
@@ -2346,7 +2425,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 
 	//if the input is actally one of the inputs then do that functionality
 		if (menuResponse == 0){
-			logOut(Warehouse1,Warehouse2,Warehouse3,OrdersFileSequenceNumber, ShipmentsFileSequenceNumber);
+			logOut(Warehouse1,Warehouse2,Warehouse3,OrdersFileSequenceNumber, ShipmentsFileSequenceNumber, Catalog);
 		}
 
 		else if (menuResponse == 1){
@@ -2374,6 +2453,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 		}
 		else if (menuResponse == 8){
 			cout << "\nTo add a new user, contact Gold Stars."<<endl;
+			displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3,OrdersFileSequenceNumber,ShipmentsFileSequenceNumber);
 		}
 		else//Any other number input will be invalid.
 			cout<<"Error: Invalid input, please try again."<<endl<<endl;
@@ -2381,7 +2461,7 @@ void displayMainMenu(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& War
 
 }
 
-void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3,string& OrdersFileSequenceNumber, string& ShipmentsFileSequenceNumber)
+void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3,string& OrdersFileSequenceNumber, string& ShipmentsFileSequenceNumber, vector<CatalogItem>Catalog)
 {
 	ofstream outputFile;
 	outputFile.open("WarehouseStatus.txt");
@@ -2432,7 +2512,17 @@ void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& War
 	{
 		outputFile<<"L"<<Warehouse3[2][x].ItemID<<Warehouse3[2][x].quantity<<endl;
 	}
-
+	outputFile.close();
+	
+	outputFile.open("Catalog.txt");
+	time_t t = time(0);   // get time now
+    struct tm * now = localtime( & t );
+	outputFile<<"H"<< (now->tm_year + 1900) << '-' << (now->tm_mon + 1) << '-'<<  now->tm_mday<< endl;
+	for (int x=0;x<Catalog.size();x++)
+	{
+		outputFile<<Catalog[x].ID<<Catalog[x].itemName<<Catalog[x].itemSize<<Catalog[x].itemPrice<<Catalog[x].itemDesc<<endl;
+	}
+	outputFile<<"T"<<Catalog.size()<<endl;
 	exit(0);//exit point of the program
 }
 
@@ -2777,7 +2867,6 @@ void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>
 								cout << "New Item Price: " << Catalog[x].itemPrice << endl << endl;
 								break;
 							case 4:
-								//cout << "Small Space: " << counterSmall << " Med Space: " << counterMed << " Large Space: " << endl;
 								cout << "Current Size: " << Catalog[x].itemSize << endl;
 								cout << "Enter new Size (S, M, or L): " << endl;
 								cin >> newSize;
@@ -2900,7 +2989,6 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 			cout<< "What location is the item in (-1 to return to main menu) ? ";
 		}
 
-		//cin>> locationResponse;
 		//Test boundaries
 		if(sizeResponse == "S" && locationResponse >=20 || sizeResponse == "S" && locationResponse <0 ||  sizeResponse == "L" && locationResponse >=20 || sizeResponse == "L" && locationResponse <0 || sizeResponse == "M" && locationResponse >=60|| sizeResponse == "M" && locationResponse <0 ){//if the item is out of the vector boundaries then notify.
 			if(locationResponse == -1){
@@ -3105,7 +3193,7 @@ void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>&
 
 	}
 
-	//if the ansewr is no then return to the main menu
+	//if the answer is no then return to the main menu
 	else if(Answer == "n"){
 		cout<<"Returning to the main menu."<<endl;
 	
@@ -3353,57 +3441,6 @@ void AddToLogFile(string itemNumber, string warehouse, string quantity, string I
 	logFile.close();
 };
 
-
-
-
-
-//void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3,string&  OrdersFileSequenceNumber, string& ShipmentsFileSequenceNumber)
-//{
-//	ofstream outputFile;
-//	outputFile.open("WarehouseStatus.txt");
-//	OrdersFileSequenceNumber= atoi(OrdersFileSequenceNumber.c_str())+1;
-//	ShipmentsFileSequenceNumber=atoi(ShipmentsFileSequenceNumber.c_str())+1;
-//	
-//	outputFile<<"OrdersFileSequenceNumber = "<<OrdersFileSequenceNumber<<endl;
-//	outputFile<<"ShipmentFileSequenceNumber = "<<ShipmentsFileSequenceNumber<<endl;
-//	for(int x=0;x<Warehouse1.at(0).size();x++)
-//	{
-//		outputFile<<"S"<<Warehouse1[0][x].ItemID<<Warehouse1[0][x].quantity<<endl;
-//	}
-//	for(int x=0;x<Warehouse1.at(1).size();x++)
-//	{
-//		outputFile<<"M"<<Warehouse1[0][x].ItemID<<Warehouse1[0][x].quantity<<endl;
-//	}
-//	for(int x=0;x<Warehouse1.at(2).size();x++)
-//	{
-//		outputFile<<"L"<<Warehouse1[0][x].ItemID<<Warehouse1[0][x].quantity<<endl;
-//	}
-//	for(int x=0;x<Warehouse2.at(0).size();x++)
-//	{
-//		outputFile<<"S"<<Warehouse2[0][x].ItemID<<Warehouse2[0][x].quantity<<endl;
-//	}
-//	for(int x=0;x<Warehouse2.at(1).size();x++)
-//	{
-//		outputFile<<"M"<<Warehouse2[0][x].ItemID<<Warehouse2[0][x].quantity<<endl;
-//	}
-//	for(int x=0;x<Warehouse2.at(2).size();x++)
-//	{
-//		outputFile<<"L"<<Warehouse2[0][x].ItemID<<Warehouse2[0][x].quantity<<endl;
-//	}
-//	for(int x=0;x<Warehouse3.at(0).size();x++)
-//	{
-//		outputFile<<"S"<<Warehouse3[0][x].ItemID<<Warehouse3[0][x].quantity<<endl;
-//	}
-//	for(int x=0;x<Warehouse3.at(1).size();x++)
-//	{
-//		outputFile<<"M"<<Warehouse3[0][x].ItemID<<Warehouse3[0][x].quantity<<endl;
-//	}
-//	for(int x=0;x<Warehouse3.at(2).size();x++)
-//	{
-//		outputFile<<"L"<<Warehouse3[0][x].ItemID<<Warehouse3[0][x].quantity<<endl;
-//	}
-//return;
-//}
 
 
 void editItemCatalog(vector<CatalogItem>& Catalog, vector<vector<Warehouse>> Warehouse1, vector<vector<Warehouse>> Warehouse2, vector<vector<Warehouse>> Warehouse3, bool first){	//(EXTRA FUNCTIONALITY: GROUP) Able to Add or Delete an item from the catalog. From SPMP, "Edits the valid item catalog, ensuring that the number of accepted items never exceeds 400."
@@ -3740,10 +3777,20 @@ void editItemCatalog(vector<CatalogItem>& Catalog, vector<vector<Warehouse>> War
 
 				}
 
-				Catalog.erase(Catalog.begin() + itemLocation);
-				cout << "Successfully Deleted!" << endl;
-				cout << "Returning to the main menu" << endl;
-				//void displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+				if(input == "Y") // delete
+				{
+					Catalog.erase(Catalog.begin() + itemLocation);
+					cout << "Successfully Deleted!" << endl;
+					cout << "Returning to the main menu" << endl;
+					//void displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3);
+				}
+
+				else // do not delete
+				{
+					cout << "Item Not Deleted." << endl;
+					//go back to the beginning
+					editItemCatalog(Catalog, Warehouse1, Warehouse2, Warehouse3, false);
+				}
 			}
 		}
 
@@ -3765,6 +3812,7 @@ void editItemCatalog(vector<CatalogItem>& Catalog, vector<vector<Warehouse>> War
 
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
+
 
 /*void addUser(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){// (EXTRA FUNCTIONALITY: ANNA) To add a new user they must contact the Gold Stars.
 
