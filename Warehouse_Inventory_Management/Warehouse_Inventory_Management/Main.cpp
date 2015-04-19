@@ -2780,9 +2780,10 @@ void searchHistoryLog(bool first){//(EXTRA FUNCTIONALITY:ZACH) Search the Histor
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
 
-void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1, vector<vector<Warehouse>>& Warehouse2, vector<vector<Warehouse>>& Warehouse3,string& OrderFileSequenceNumber,string& ShipmentsFileSequenceNumber){//(BASE FUNCTIONALITY) The inventory analyst is able to update the item name, id, price, stock, and size type.
-	string Answer, itemID, Metric, selection, tempID, tempName, tempDesc, tempPrice, tempSize, newID, newName, newDesc, newPrice, newSize; 
+void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1, vector<vector<Warehouse>>& Warehouse2, vector<vector<Warehouse>>& Warehouse3, string& OrderFileSequenceNumber, string& ShipmentsFileSequenceNumber){//(BASE FUNCTIONALITY) The inventory analyst is able to update the item name, id, price, stock, and size type.
+	string Answer, itemID, Metric, selection, tempID, tempName, tempDesc, tempPrice, tempSize, newID, newName, newDesc, newPrice, newSize;
 	int tempLoc;
+	int sizeConverter;
 	int counterSmall = 0;
 	int counterMed = 0;
 	int counterLarge = 0;
@@ -2824,115 +2825,277 @@ void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>
 		}
 	}
 
-		cout << "Type the item ID to edit or 'quit' to return to main menu.) " << endl; 
-		cin >> itemID;
+	cout << "Type the item ID to edit or 'quit' to return to main menu." << endl;
+	cin >> itemID;
 
-		for (int x = 0; x < Catalog.size(); x++)  //Searches the catalog for an item name matching input
+	for (int x = 0; x < Catalog.size(); x++)  //Searches the catalog for an item name matching input
+	{
+		if (itemID == Catalog[x].ID)	// If item ID input matches one in the catalog, the information is stored.
 		{
-			if (itemID == Catalog[x].ID)	// If item ID input matches one in the catalog, the information is stored.
-			{
-				cout << ">Item ID found." << endl << endl;;
-				tempID = itemID;
-				tempName = Catalog[x].itemName;
-				tempPrice = Catalog[x].itemPrice;
-				tempDesc = Catalog[x].itemDesc;
-				int buffer = 0; // Used to convert a string input to an int
+			cout << ">Item ID found." << endl << endl;;
+			tempID = itemID;
+			tempName = Catalog[x].itemName;
+			tempPrice = Catalog[x].itemPrice;
+			tempDesc = Catalog[x].itemDesc;
+			tempSize = Catalog[x].itemSize;
 
+			int buffer = 0; // Used to convert a string input to an int
+
+			{
 				{
+					do
 					{
-						do
+						cout << "What would you like to edit? " << endl;
+						cout << "1. Edit Item ID" << endl;
+						cout << "2. Edit Item Name" << endl;
+						cout << "3. Edit Item Price" << endl;
+						cout << "4. Edit Size" << endl;
+						cout << "5. Edit Description" << endl;
+						cout << "6. Exit" << endl;
+						cin >> selection;
+						buffer = atoi(selection.c_str()); //converts string to int
+						switch (buffer)
 						{
-							cout << "What would you like to edit? " << endl;
-							cout << "1. Edit Item ID" << endl;
-							cout << "2. Edit Item Name" << endl;
-							cout << "3. Edit Item Price" << endl;
-							cout << "4. Edit Size" << endl;
-							cout << "5. Edit Description" << endl;
-							cout << "6. Exit" << endl;
-							cin >> selection;
-							buffer = atoi(selection.c_str()); //converts string to int
-							switch (buffer)
-							{
-							case 1:
-								cout << "Current ID: " << Catalog[x].ID << endl;
-								cout << "Enter new ID: " << endl;
-								cin >> newID;
-								Catalog[x].ID = newID;
-								cout << "Item Changed." << endl;
-								cout << "New item ID: " << Catalog[x].ID << endl << endl;
-								break;
-							case 2:
-								cout << "Current Name: " << Catalog[x].itemName << endl;
-								cout << "Enter new item name: " << endl;
-								cin >> newName;
-								Catalog[x].itemName = newName;
-								cout << "Item Changed." << endl;
-								cout << "New Item Name: " << Catalog[x].itemName << endl << endl;
-								break;
-							case 3:
-								cout << "Current Price: " << Catalog[x].itemPrice << endl;
-								cout << "Enter new price: " << endl;
-								cin >> newPrice;
-								Catalog[x].itemPrice = newPrice;
-								cout << "Item Changed." << endl;
-								cout << "New Item Price: " << Catalog[x].itemPrice << endl << endl;
-								break;
-							case 4:
+						case 1:
+							cout << "Current ID: " << Catalog[x].ID << endl;
+							cout << "Enter new ID: " << endl;
+							cin >> newID;
+							Catalog[x].ID = newID;
+							cout << "Item Changed." << endl;
+							cout << "New item ID: " << Catalog[x].ID << endl << endl;
+							break;
+						case 2:
+							cout << "Current Name: " << Catalog[x].itemName << endl;
+							cout << "Enter new item name: " << endl;
+							cin >> newName;
+							Catalog[x].itemName = newName;
+							cout << "Item Changed." << endl;
+							cout << "New Item Name: " << Catalog[x].itemName << endl << endl;
+							break;
+						case 3:
+							cout << "Current Price: " << Catalog[x].itemPrice << endl;
+							cout << "Enter new price: " << endl;
+							cin >> newPrice;
+							Catalog[x].itemPrice = newPrice;
+							cout << "Item Changed." << endl;
+							cout << "New Item Price: " << Catalog[x].itemPrice << endl << endl;
+							break;
+						case 4:
+							//cout << "Small Space: " << counterSmall << " Med Space: " << counterMed << " Large Space: " << endl;
+							do {
 								cout << "Current Size: " << Catalog[x].itemSize << endl;
 								cout << "Enter new Size (S, M, or L): " << endl;
 								cin >> newSize;
-								if (newSize == "S" && counterSmall > 0)
-								{
-									Catalog[x].itemSize = newSize;
-									cout << "Item Changed." << endl;
-									cout << "New Item Size: " << Catalog[x].itemSize << endl << endl;
-								}
-								if (newSize == "M" && counterMed > 0)
-								{
-									Catalog[x].itemSize = newSize;
-									cout << "Item Changed." << endl;
-									cout << "New Item Size: " << Catalog[x].itemSize << endl << endl;
-								}
-								if (newSize == "L" && counterLarge > 0)
-								{
-									Catalog[x].itemSize = newSize;
-									cout << "Item Changed." << endl;
-									cout << "New Item Size: " << Catalog[x].itemSize << endl << endl;
-								}
-								break;
-							case 5:
-								cout << "Current Description: " << Catalog[x].itemDesc << endl;
-								cout << "Enter new description: " << endl;
-								cin.ignore();
-								getline (cin, newDesc);
-								Catalog[x].itemDesc = newDesc;
-								cout << "Item Changed." << endl;
-								cout << "New Item Description: " << Catalog[x].itemDesc << endl <<endl;
-								break;
-							case 6: 
-								displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3,OrderFileSequenceNumber,ShipmentsFileSequenceNumber);
-								break;
+							} while (newSize != "S" && newSize != "M" && newSize != "L");
 
-							default: cout << endl;
-								cout << "Error: " << selection << " is invalid input, please try again." << endl << endl;
-								break;
+							if (newSize == "S")               //convert the response to vector row
+								sizeConverter = 0;
+							else if (newSize == "M")
+								sizeConverter = 1;
+							else if (newSize == "L")
+								sizeConverter = 2;
+
+							if (newSize == Catalog[x].itemSize)
+							{
+								cout << "The size is already " << newSize << ". No changes were made." << endl;
 							}
-						} while (buffer != 6);
-					}
+
+							if (tempSize == "S" && counterSmall > 0)
+							{
+								for (int i = 0; i < 20; i++)
+								{
+									if (Warehouse1[0][i].ItemID == Catalog[x].ID)
+									{
+										for (int j = 0; j < 20; j++)
+										{
+											if (Warehouse1[sizeConverter][j].ItemID == "")
+											{
+												Warehouse1[sizeConverter][j].ItemID = Warehouse1[0][i].ItemID;
+												Warehouse1[sizeConverter][j].quantity = Warehouse1[0][i].quantity;
+												Warehouse1[0][i].ItemID = "";
+												Warehouse1[0][i].quantity = "";
+												cout << "Item Changed." << endl;
+												break;
+											}
+										}
+									}
+									else if (Warehouse2[0][i].ItemID == itemID)
+									{
+										for (int j = 0; j < 20; j++)
+										{
+											if (Warehouse2[sizeConverter][j].ItemID == "")
+											{
+												Warehouse2[sizeConverter][j].ItemID = Warehouse2[0][i].ItemID;
+												Warehouse2[sizeConverter][j].quantity = Warehouse2[0][i].quantity;
+												Warehouse2[0][i].ItemID = "";
+												Warehouse2[0][i].quantity = "";
+												cout << "Item Changed." << endl;
+												break;
+											}
+										}
+									}
+									else if (Warehouse3[0][i].ItemID == itemID)
+									{
+										for (int j = 0; j < 20; j++)
+										{
+											if (Warehouse3[sizeConverter][j].ItemID == "")
+											{
+												Warehouse3[sizeConverter][j].ItemID = Warehouse3[0][i].ItemID;
+												Warehouse3[sizeConverter][j].quantity = Warehouse3[0][i].quantity;
+												Warehouse3[0][i].ItemID = "";
+												Warehouse3[0][i].quantity = "";
+												cout << "Item Changed." << endl;
+												break;
+											}
+										}
+									}
+								}
+								Catalog[x].itemSize = newSize;
+								cout << "Item successfully moved and changed." << endl;
+								cout << "New Item Size: " << Catalog[x].itemSize << endl << endl;
+							}
+							else if (tempSize == "M" && counterMed > 0)
+							{
+								for (int i = 0; i < 60; i++)
+								{
+									if (Warehouse1[1][i].ItemID == itemID)
+									{
+										for (int j = 0; j < 60; j++)
+										{
+											if (Warehouse1[sizeConverter][j].ItemID == "")
+											{
+												Warehouse1[sizeConverter][j].ItemID = Warehouse1[1][i].ItemID;
+												Warehouse1[sizeConverter][j].quantity = Warehouse1[1][i].quantity;
+												Warehouse1[1][i].ItemID = "";
+												Warehouse1[1][i].quantity = "";
+												cout << "Item Changed." << endl;
+												break;
+											}
+										}
+									}
+									else if (Warehouse2[1][i].ItemID == itemID)
+									{
+										for (int j = 0; j < 60; j++)
+										{
+											if (Warehouse2[sizeConverter][j].ItemID == "")
+											{
+												Warehouse2[sizeConverter][j].ItemID = Warehouse2[1][i].ItemID;
+												Warehouse2[sizeConverter][j].quantity = Warehouse2[1][i].quantity;
+												Warehouse2[1][i].ItemID = "";
+												Warehouse2[1][i].quantity = "";
+												cout << "Item Changed." << endl;
+												break;
+											}
+										}
+									}
+									else if (Warehouse3[1][i].ItemID == itemID)
+									{
+										for (int j = 0; j < 60; j++)
+										{
+											if (Warehouse3[sizeConverter][j].ItemID == "")
+											{
+												Warehouse3[sizeConverter][j].ItemID = Warehouse3[1][i].ItemID;
+												Warehouse3[sizeConverter][j].quantity = Warehouse3[1][i].quantity;
+												Warehouse3[1][i].ItemID = "";
+												Warehouse3[1][i].quantity = "";
+												cout << "Item Changed." << endl;
+												break;
+											}
+										}
+									}
+								}
+								Catalog[x].itemSize = newSize;
+								cout << "Item successfully moved and changed." << endl;
+								cout << "New Item Size: " << Catalog[x].itemSize << endl << endl;
+							}
+							else if (tempSize == "L" && counterLarge > 0)
+							{
+								for (int i = 0; i < 20; i++)
+								{
+									if (Warehouse1[2][i].ItemID == itemID)
+									{
+										for (int j = 0; j < 20; j++)
+										{
+											if (Warehouse1[sizeConverter][j].ItemID == "")
+											{
+												Warehouse1[sizeConverter][j].ItemID = Warehouse1[2][i].ItemID;
+												Warehouse1[sizeConverter][j].quantity = Warehouse1[0][i].quantity;
+												Warehouse1[2][i].ItemID = "";
+												Warehouse1[2][i].quantity = "";
+												cout << "Item Changed." << endl;
+												break;
+											}
+										}
+									}
+									else if (Warehouse2[2][i].ItemID == itemID)
+									{
+										for (int j = 0; j < 20; j++)
+										{
+											if (Warehouse2[sizeConverter][j].ItemID == "")
+											{
+												Warehouse2[sizeConverter][j].ItemID = Warehouse2[2][i].ItemID;
+												Warehouse2[sizeConverter][j].quantity = Warehouse2[2][i].quantity;
+												Warehouse2[2][i].ItemID = "";
+												Warehouse2[2][i].quantity = "";
+												cout << "Item Changed." << endl;
+												break;
+											}
+										}
+									}
+									else if (Warehouse3[2][i].ItemID == itemID)
+									{
+										for (int j = 0; j < 20; j++)
+										{
+											if (Warehouse3[sizeConverter][j].ItemID == "")
+											{
+												Warehouse3[sizeConverter][j].ItemID = Warehouse3[2][i].ItemID;
+												Warehouse3[sizeConverter][j].quantity = Warehouse3[2][i].quantity;
+												Warehouse3[2][i].ItemID = "";
+												Warehouse3[2][i].quantity = "";
+												cout << "Item Changed." << endl;
+												break;
+											}
+										}
+									}
+								}
+								Catalog[x].itemSize = newSize;
+								cout << "Item successfully moved and changed." << endl;
+								cout << "New Item Size: " << Catalog[x].itemSize << endl << endl;
+							}
+							break;
+
+						case 5:
+							cout << "Current Description: " << Catalog[x].itemDesc << endl;
+							cout << "Enter new description: " << endl;
+							cin.ignore();
+							getline(cin, newDesc);
+							Catalog[x].itemDesc = newDesc;
+							cout << "Item Changed." << endl;
+							cout << "New Item Description: " << Catalog[x].itemDesc << endl << endl;
+							break;
+						case 6:
+							displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3, OrderFileSequenceNumber, ShipmentsFileSequenceNumber);
+							break;
+
+						default: cout << endl;
+							cout << "Error: " << selection << " is invalid input, please try again." << endl << endl;
+							break;
+						}
+					} while (buffer != 6);
 				}
 			}
-			else if (x == Catalog.size()-1) //If the program searches entire catalog and does not have a matching ID to input, display msg.
-			{
-					cout << "Item not found, please try again." << endl << endl;
-					itemInformationDisplay(Catalog, Warehouse1, Warehouse2, Warehouse3,OrderFileSequenceNumber,ShipmentsFileSequenceNumber);
-			}
-			else if (itemID == "QUIT" || itemID == "quit") // case for exiting program in case mistake in main menu was made. 
-			{
-				displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3,OrderFileSequenceNumber,ShipmentsFileSequenceNumber);
-			}
 		}
-}                                                                                                                      
-
+		else if (x == Catalog.size() - 1) //If the program searches entire catalog and does not have a matching ID to input, display msg.
+		{
+			cout << "Item not found, please try again." << endl << endl;
+			itemInformationDisplay(Catalog, Warehouse1, Warehouse2, Warehouse3, OrderFileSequenceNumber, ShipmentsFileSequenceNumber);
+		}
+		else if (itemID == "QUIT" || itemID == "quit") // case for exiting program in case mistake in main menu was made. 
+		{
+			displayMainMenu(Catalog, Warehouse1, Warehouse2, Warehouse3, OrderFileSequenceNumber, ShipmentsFileSequenceNumber);
+		}
+	}
+}
 
 void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3,string&OrdersFileSequenceNumber,string&ShipmentsFileSequenceNumber){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
 	
@@ -3823,4 +3986,3 @@ void editItemCatalog(vector<CatalogItem>& Catalog, vector<vector<Warehouse>> War
 
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
-
