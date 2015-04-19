@@ -564,7 +564,7 @@ vector<Orders> loadOrders(string&CustomerSequenceID){
 	}
 	if(TEST[0].substr(1)== to_string(StoredDailyOrders.size()))
 	{
-		cout<<"All "<<StoredDailyOrders.size()<<" vendors were processed.\n";
+		cout<<"All "<<StoredDailyOrders.size()<<" Customers were processed.\n";
 	}else cout<<"There was an error with the Customer File. The Trailer number does not match the number of Customers in the file.\n";
 	if(TEST[1]== to_string(StoredDailyOrders.size()))
 	{
@@ -1597,24 +1597,18 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse1[0].push_back(A);
 									k=Warehouse1.at(0).size();
 									Store=true;
-
-									//AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
-									
 								}
 								else cout<<"Insufficient space for "<<Warehouse1[0][k].ItemID<<"in Warehouse 1.\n";//fix this
 
 						}
 							else cout<<"Insufficient space for "<<Warehouse1[0][k].ItemID<<"in Warehouse 1.\n";//fix this
-
-
-
 						} 
 					}
 					if (Store!=true)
 							{
 							if(k==Warehouse1.at(0).size() && Warehouse1.at(0).size()<20)
 							{
-								AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								//AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								int AmountLeft=atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());//amount remaining to put away
 								int HowManySpacesDoINeed=AmountLeft/250;
 								int SpacesLeft= 20 - (Warehouse1.at(0).size());
@@ -1627,7 +1621,6 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									A.ItemID=ID;
 									AmountLeft=AmountLeft-250;
 									Warehouse1[0].push_back(A);
-									Store=true;
 									}
 									Warehouse A;
 									A.quantity=to_string(AmountLeft);
@@ -1635,11 +1628,12 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									A.ItemID=ID;
 									Warehouse1[0].push_back(A);
 									k=Warehouse1.at(0).size();
+									AddToLogFile(ID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 									Store=true;
-									AddToLogFile(Warehouse1[0][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
-								
 								}
 							}
+
+
 							}
 					}else if(itemSize=="M")
 					{
@@ -1719,7 +1713,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse1[1].push_back(A);
 									k=Warehouse1.at(1).size();
 									Store=true;
-									AddToLogFile(Warehouse1[1][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									AddToLogFile(ID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								}
 							}
 							}
@@ -1770,7 +1764,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse1[2].push_back(A);
 									k=Warehouse1.at(2).size();
 									Store=true;
-									//y++;
+									AddToLogFile(Warehouse1[2][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 									
 								}
 								else cout<<"Insufficient space for "<<Warehouse1[2][k].ItemID<<"in Warehouse 1.\n";
@@ -1803,7 +1797,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse1[2].push_back(A);
 									k=Warehouse1.at(2).size();
 									Store=true;
-									AddToLogFile(Warehouse1[2][k].ItemID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									AddToLogFile(ID, "Warehouse 1",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 								}
 							}
@@ -1893,7 +1887,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[0].push_back(A);
 									k=Warehouse2.at(0).size();
 									Store=true;
-									AddToLogFile(Warehouse2[0][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									AddToLogFile(ID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 
 								}
@@ -1917,7 +1911,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 								int NewQuant=atoi(Warehouse2[1][k].quantity.c_str())+atoi(StoredDailyShipments[x].ItemsShippedVector[y].Count.c_str());
 								Warehouse2[1][k].quantity=to_string(NewQuant);
 								Store=true;
-								AddToLogFile(Warehouse2[1][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+								AddToLogFile(ID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 							}
 
@@ -1947,7 +1941,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[1].push_back(A);
 									k=Warehouse2.at(1).size();
 									Store=true;
-									AddToLogFile(Warehouse2[1][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									AddToLogFile(ID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 									
 								}
@@ -1983,7 +1977,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[1].push_back(A);
 									k=Warehouse2.at(1).size();
 									Store=true;
-									AddToLogFile(Warehouse2[1][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									AddToLogFile(ID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 								}
 							}
@@ -2074,7 +2068,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse2[2].push_back(A);
 									k=Warehouse2.at(2).size();
 									Store=true;
-									AddToLogFile(Warehouse2[2][k].ItemID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									AddToLogFile(ID, "Warehouse 2",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 								}
 							}
@@ -2128,7 +2122,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									k=Warehouse3.at(0).size();
 									Store=true;
 									//y++;
-									AddToLogFile(Warehouse3[0][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									//AddToLogFile(Warehouse3[0][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 								}
 								else cout<<"Insufficient space for "<<Warehouse3[0][k].ItemID<<"in Warehouse 3.\n";
@@ -2163,7 +2157,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse3[0].push_back(A);
 									k=Warehouse3.at(0).size();
 									Store=true;
-									AddToLogFile(Warehouse3[0][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									AddToLogFile(ID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 								}
 							}
@@ -2253,7 +2247,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse3[1].push_back(A);
 									k=Warehouse3.at(1).size();
 									Store=true;
-									AddToLogFile(Warehouse3[1][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									AddToLogFile(ID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 								}
 							}
@@ -2343,7 +2337,7 @@ void ProcessShipments(vector<CatalogItem>&Catalog, vector<Shipments>& StoredDail
 									Warehouse3[2].push_back(A);
 									k=Warehouse3.at(2).size();
 									Store=true;
-									AddToLogFile(Warehouse3[2][k].ItemID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
+									AddToLogFile(ID, "Warehouse 3",StoredDailyShipments[x].ItemsShippedVector[y].Count, "IN", StoredDailyShipments[x].VendorShippingDate);
 								
 								}
 							}
@@ -2372,16 +2366,17 @@ int main () {
     cout << "Welcome to the Gold Star's Warehouse Inventory Management System!" << endl << endl;//Main start up message
 	programStartUp();
 	vector<CatalogItem> Catalog = loadCatalog();
+	cout<<"HEYE";
 	SetUpWarehouses(Warehouse1, Warehouse2, Warehouse3, OrdersFileSequenceNumber, ShipmentsFileSequenceNumber);
 	vector<Orders> StoredDailyOrders = loadOrders(OrdersFileSequenceNumber);
 	
 	vector<Shipments> StoredDailyShipments = loadShipments(ShipmentsFileSequenceNumber);
 
-
+	cout<<"PRE ORDERS\n";
 	ProcessOrders(Catalog, StoredDailyOrders, Warehouse1, Warehouse2, Warehouse3);
-
+	cout<<"HHHHHHHIIIII ORDERS DONE\n";
 	ProcessShipments(Catalog, StoredDailyShipments, Warehouse1, Warehouse2, Warehouse3);
-	
+	cout<<"SHIPMENTS DONE\n";
 
 	//cody needs to add blank spaces
 	Warehouse1[0].resize(20);
@@ -2482,8 +2477,8 @@ void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& War
 	OrdersFileSequenceNumberINT++;
 	ShipmentsFileSequenceNumberINT++;
 
-	outputFile<<"OrdersFileSequenceNumber = "<<OrdersFileSequenceNumber<<endl;
-	outputFile<<"ShipmentFileSequenceNumber = "<<ShipmentsFileSequenceNumber<<endl;
+	outputFile<<"OrdersFileSequenceNumber = "<<OrdersFileSequenceNumberINT<<endl;
+	outputFile<<"ShipmentFileSequenceNumber = "<<ShipmentsFileSequenceNumberINT<<endl;
 	outputFile<<"Warehouse 1:"<<endl;
 	for(int x=0;Warehouse1[0][x].ItemID.length()>0;x++)
 	{
@@ -3096,7 +3091,6 @@ void itemInformationDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>
 		}
 	}
 }
-
 void itemInventoryDisplay(vector<CatalogItem>Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3,string&OrdersFileSequenceNumber,string&ShipmentsFileSequenceNumber){//(BASE FUNCTIONALITY) Retrieves current status of all 3 warehouses' inventory, and allows inventory analyst to override any location status and update inventory
 	
 	string Answer;// the users answer for if they want to edit a quantity.
@@ -3986,3 +3980,11 @@ void editItemCatalog(vector<CatalogItem>& Catalog, vector<vector<Warehouse>> War
 
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
+
+
+/*void addUser(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){// (EXTRA FUNCTIONALITY: ANNA) To add a new user they must contact the Gold Stars.
+
+
+	cout << "\nTo add a new user, contact Gold Stars."<<endl;
+	displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
+}*/
