@@ -2364,17 +2364,16 @@ int main () {
     cout << "Welcome to the Gold Star's Warehouse Inventory Management System!" << endl << endl;//Main start up message
 	programStartUp();
 	vector<CatalogItem> Catalog = loadCatalog();
-	cout<<"HEYE";
+
 	SetUpWarehouses(Warehouse1, Warehouse2, Warehouse3, OrdersFileSequenceNumber, ShipmentsFileSequenceNumber);
 	vector<Orders> StoredDailyOrders = loadOrders(OrdersFileSequenceNumber);
 	
 	vector<Shipments> StoredDailyShipments = loadShipments(ShipmentsFileSequenceNumber);
 
-	cout<<"PRE ORDERS\n";
 	ProcessOrders(Catalog, StoredDailyOrders, Warehouse1, Warehouse2, Warehouse3);
-	cout<<"HHHHHHHIIIII ORDERS DONE\n";
+
 	ProcessShipments(Catalog, StoredDailyShipments, Warehouse1, Warehouse2, Warehouse3);
-	cout<<"SHIPMENTS DONE\n";
+
 
 	//cody needs to add blank spaces
 	Warehouse1[0].resize(20);
