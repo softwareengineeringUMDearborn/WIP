@@ -307,8 +307,6 @@ vector<Shipments> loadShipments(string&VendorFileSequenceID)
 	string Exit;
 	int numberofDash=0;
 
-
-	
 	if(cat.fail())         
        { 
 		  cout<<"System Error: Unable to load Vendor Shipments File.\n";
@@ -318,13 +316,10 @@ vector<Shipments> loadShipments(string&VendorFileSequenceID)
 				   cin>>Exit;
 			}
 			if(Exit=="Exit")exit(0);
-	}
-
+		}
 
 	//getting the header
-
 	getline(cat,sLine);
-
 
 	for(int x=0;sLine.substr(x,1)!="-";x++)
 	{
@@ -336,7 +331,6 @@ vector<Shipments> loadShipments(string&VendorFileSequenceID)
 	{
 		cout<<"Vendor File sequence number incorrect."<<endl;
 	}
-
 	
 	getline(cat,sLine);
 	data.clear();
@@ -448,7 +442,6 @@ vector<Orders> loadOrders(string&CustomerSequenceID){
 	//getting the header
 
 	getline(cat,sLine);
-	
 
 	for(int x=0;sLine.substr(x,1)!="-";x++)
 	{
@@ -1141,6 +1134,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Customer ID: "<<StoredDailyOrders[x].CustomerID<<endl;
+							outputFile<<ID<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<endl;
 					}
 						
 					}
@@ -1188,6 +1183,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Customer ID: "<<StoredDailyOrders[x].CustomerID<<endl;
+							outputFile<<ID<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<endl;
 					}
 						//delete empty spaces
 					for(int l=0;l<Warehouse1.at(1).size();l++)
@@ -1231,6 +1228,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Customer ID: "<<StoredDailyOrders[x].CustomerID<<endl;
+							outputFile<<ID<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<endl;
 					}
 					//delete empty spaces
 					for(int l=0;l<Warehouse1.at(2).size();l++)
@@ -1277,6 +1276,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Customer ID: "<<StoredDailyOrders[x].CustomerID<<endl;
+							outputFile<<ID<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<endl;
 					}
 						
 					}
@@ -1324,6 +1325,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Customer ID: "<<StoredDailyOrders[x].CustomerID<<endl;
+							outputFile<<ID<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<endl;
 					}
 						//delete empty spaces
 					for(int l=0;l<Warehouse2.at(1).size();l++)
@@ -1366,6 +1369,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Customer ID: "<<StoredDailyOrders[x].CustomerID<<endl;
+							outputFile<<ID<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<endl;
 					}
 					//delete empty spaces
 					for(int l=0;l<Warehouse2.at(2).size();l++)
@@ -1412,6 +1417,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Customer ID: "<<StoredDailyOrders[x].CustomerID<<endl;
+							outputFile<<ID<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<endl;
 					}
 						
 					}
@@ -1459,6 +1466,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Customer ID: "<<StoredDailyOrders[x].CustomerID<<endl;
+							outputFile<<ID<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<endl;
 					}
 						//delete empty spaces
 					for(int l=0;l<Warehouse3.at(1).size();l++)
@@ -1501,6 +1510,8 @@ void ProcessOrders(vector<CatalogItem>&Catalog, vector<Orders>& StoredDailyOrder
 							StoredDailyOrders[x].ItemsOrderedVector[y].MultipleLocations.push_back(A);
 							cout<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
 							outputFile<<"Insufficient amount of item number "<< ID<<" on hand for the order.\n";
+							outputFile<<"Customer ID: "<<StoredDailyOrders[x].CustomerID<<endl;
+							outputFile<<ID<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Warehouse<<"-"<<StoredDailyOrders[x].ItemsOrderedVector[y].Count<<endl;
 					}
 					//delete empty spaces
 					for(int l=0;l<Warehouse3.at(2).size();l++)
@@ -3813,10 +3824,3 @@ void editItemCatalog(vector<CatalogItem>& Catalog, vector<vector<Warehouse>> War
 	//displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
 }
 
-
-/*void addUser(vector<CatalogItem>&Catalog, vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& Warehouse2,vector<vector<Warehouse>>& Warehouse3){// (EXTRA FUNCTIONALITY: ANNA) To add a new user they must contact the Gold Stars.
-
-
-	cout << "\nTo add a new user, contact Gold Stars."<<endl;
-	displayMainMenu(Catalog, Warehouse1,Warehouse2,Warehouse3);
-}*/
