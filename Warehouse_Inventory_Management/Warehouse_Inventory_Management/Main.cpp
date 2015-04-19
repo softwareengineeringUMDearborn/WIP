@@ -7,8 +7,6 @@
 #include<sstream>
 #include<ctime>
 
-
-
 using namespace std;
 
 struct CatalogItem{
@@ -2480,43 +2478,43 @@ void logOut(vector<vector<Warehouse>>& Warehouse1,vector<vector<Warehouse>>& War
 	outputFile<<"OrdersFileSequenceNumber = "<<OrdersFileSequenceNumberINT<<endl;
 	outputFile<<"ShipmentFileSequenceNumber = "<<ShipmentsFileSequenceNumberINT<<endl;
 	outputFile<<"Warehouse 1:"<<endl;
-	for(int x=0;Warehouse1[0][x].ItemID.length()>0;x++)
+	for(int x=0;x<20;x++)
 	{
-		outputFile<<"S"<<Warehouse1[0][x].ItemID<<Warehouse1[0][x].quantity<<endl;
+		if(Warehouse1[0][x].ItemID.length()>0)outputFile<<"S"<<Warehouse1[0][x].ItemID<<Warehouse1[0][x].quantity<<endl;
 	}
-	for(int x=0;Warehouse1[1][x].ItemID.length()>0;x++)
+	for(int x=0;x<60;x++)
 	{
-		outputFile<<"M"<<Warehouse1[1][x].ItemID<<Warehouse1[1][x].quantity<<endl;
+		if(Warehouse1[1][x].ItemID.length()>0)outputFile<<"M"<<Warehouse1[1][x].ItemID<<Warehouse1[1][x].quantity<<endl;
 	}
-	for(int x=0;Warehouse1[2][x].ItemID.length()>0;x++)
+	for(int x=0;x<20;x++)
 	{
-		outputFile<<"L"<<Warehouse1[2][x].ItemID<<Warehouse1[2][x].quantity<<endl;
+		if(Warehouse1[2][x].ItemID.length()>0)outputFile<<"L"<<Warehouse1[2][x].ItemID<<Warehouse1[2][x].quantity<<endl;
 	}
 	outputFile<<"Warehouse 2:"<<endl;
-	for(int x=0;Warehouse2[0][x].ItemID.length()>0;x++)
+	for(int x=0;x<20;x++)
 	{
-		outputFile<<"S"<<Warehouse2[0][x].ItemID<<Warehouse2[0][x].quantity<<endl;
+		if(Warehouse2[0][x].ItemID.length()>0)outputFile<<"S"<<Warehouse2[0][x].ItemID<<Warehouse2[0][x].quantity<<endl;
 	}
-	for(int x=0;Warehouse2[1][x].ItemID.length()>0;x++)
+	for(int x=0;x<60;x++)
 	{
-		outputFile<<"M"<<Warehouse2[1][x].ItemID<<Warehouse2[1][x].quantity<<endl;
+		if(Warehouse2[1][x].ItemID.length()>0)outputFile<<"M"<<Warehouse2[1][x].ItemID<<Warehouse2[1][x].quantity<<endl;
 	}
-	for(int x=0;Warehouse2[2][x].ItemID.length()>0;x++)
+	for(int x=0;x<20;x++)
 	{
-		outputFile<<"L"<<Warehouse2[2][x].ItemID<<Warehouse2[2][x].quantity<<endl;
+		if(Warehouse2[2][x].ItemID.length()>0)outputFile<<"L"<<Warehouse2[2][x].ItemID<<Warehouse2[2][x].quantity<<endl;
 	}
 	outputFile<<"Warehouse 3:"<<endl;
-	for(int x=0;Warehouse3[0][x].ItemID.length()>0;x++)
+	for(int x=0;x<20;x++)
 	{
-		outputFile<<"S"<<Warehouse3[0][x].ItemID<<Warehouse3[0][x].quantity<<endl;
+		if(Warehouse3[0][x].ItemID.length()>0)outputFile<<"S"<<Warehouse3[0][x].ItemID<<Warehouse3[0][x].quantity<<endl;
 	}
-	for(int x=0;Warehouse3[1][x].ItemID.length()>0;x++)
+	for(int x=0;x<60;x++)
 	{
-		outputFile<<"M"<<Warehouse3[1][x].ItemID<<Warehouse3[1][x].quantity<<endl;
+		if(Warehouse3[1][x].ItemID.length()>0)outputFile<<"M"<<Warehouse3[1][x].ItemID<<Warehouse3[1][x].quantity<<endl;
 	}
-	for(int x=0;Warehouse3[2][x].ItemID.length()>0;x++)
+	for(int x=0;x<20;x++)
 	{
-		outputFile<<"L"<<Warehouse3[2][x].ItemID<<Warehouse3[2][x].quantity<<endl;
+		if(Warehouse3[2][x].ItemID.length()>0)outputFile<<"L"<<Warehouse3[2][x].ItemID<<Warehouse3[2][x].quantity<<endl;
 	}
 	outputFile.close();
 	
