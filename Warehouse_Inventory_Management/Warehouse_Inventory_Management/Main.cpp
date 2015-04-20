@@ -2370,10 +2370,11 @@ int main () {
 	
 	vector<Shipments> StoredDailyShipments = loadShipments(ShipmentsFileSequenceNumber);
 
+
 	ProcessOrders(Catalog, StoredDailyOrders, Warehouse1, Warehouse2, Warehouse3);
 
 	ProcessShipments(Catalog, StoredDailyShipments, Warehouse1, Warehouse2, Warehouse3);
-
+	
 
 	//cody needs to add blank spaces
 	Warehouse1[0].resize(20);
@@ -3679,13 +3680,18 @@ void editItemCatalog(vector<CatalogItem>& Catalog, vector<vector<Warehouse>> War
 
 			cout << "Enter the name of the item that you would like to add: ";
 			getline(cin, input);
-			if (input.size() > 20)
+			if (input.size() > 30)
 			{
-				Item.itemName = input.substr(0, 20);
+				Item.itemName = input.substr(0, 30);
 			}
 			else
+			{
+				while(input.length()<30)
+				{
+					input=input+" ";
+				}
 				Item.itemName = input;
-
+			}
 			input = "";
 			choice = false;
 
